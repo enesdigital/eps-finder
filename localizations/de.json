@@ -45,5 +45,5 @@
   "setup.cleanupFailed": "Einige ältere Kopien konnten nicht in den Papierkorb verschoben werden. Entferne ältere EPS-Finder-Kopien manuell aus den Programme-Ordnern.",
   "installer.startup": "Nach der Installation wird EPS Finder als Anmeldeobjekt registriert und sucht beim Start nach Updates. Du kannst beide Optionen in der App ändern. macOS kann eine Freigabe unter Anmeldeobjekte verlangen.",
   "installer.cleanup": "Die installierte App ersetzt die bisherige Version in /Applications. Ältere EPS-Finder-Kopien im Programme-Ordner und deinem persönlichen Applications-Ordner werden in den Papierkorb verschoben. EPS-Dokumente bleiben unberührt.",
-  "update.releaseNotes": "Updates werden jetzt direkt in EPS Finder geladen, überprüft und installiert. Danach startet die App neu. EPS-Symbol, Start bei Anmeldung und Bereinigung älterer Versionen bleiben erhalten."
+  "update.releaseNotes": "Version zur Überprüfung von Updates. Die Funktionen von 1.4.0 bleiben erhalten. Diese Version dient zum Testen des echten GitHub-Downloads, der Signaturprüfung, der Installation in der App und des automatischen Neustarts."
 }

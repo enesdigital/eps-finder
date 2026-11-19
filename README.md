@@ -12,7 +12,7 @@ Release 1.4.0 adds verified in-app updates with Sparkle. [EPS icon](assets/ICON.
 
 ## Install
 
-1. Download `EPS-Finder-1.4.0-universal-unsigned.pkg` from [Releases](https://github.com/enesdigital/eps-finder/releases/latest). The same package supports Intel and Apple Silicon.
+1. Download `EPS-Finder-1.4.1-universal-unsigned.pkg` from [Releases](https://github.com/enesdigital/eps-finder/releases/latest). The same package supports Intel and Apple Silicon.
 2. Open the `.pkg` and follow the installer. It installs `/Applications/EPS Finder.app` and requires administrator approval.
 3. Open EPS Finder once. Click **Show sample file** to reveal the bundled sample EPS in Finder.
 
@@ -103,4 +103,4 @@ This checks the size and alignment of the included dark-background sample. A pac
 
 AGPL-3.0-or-later; see [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Share the generated source ZIP alongside the binary package.
 
-[Releases](https://github.com/enesdigital/eps-finder/releases/latest) contains the installer, `EPS-Finder-1.4.0-source.zip` and a `SHA256SUMS` file. Use this explicit source ZIP for the complete Ghostscript and Sparkle sources; GitHub’s automatically generated “Source code” archives do not include the bundled upstream archive.
+[Releases](https://github.com/enesdigital/eps-finder/releases/latest) contains the installer, `EPS-Finder-1.4.1-source.zip` and a `SHA256SUMS` file. Use this explicit source ZIP for the complete Ghostscript and Sparkle sources; GitHub’s automatically generated “Source code” archives do not include the bundled upstream archive.

@@ -12,7 +12,7 @@ Version 1.4.0 ergänzt überprüfte Updates innerhalb der App mit Sparkle. [EPS 
 
 ## Installation
 
-1. Lade `EPS-Finder-1.4.0-universal-unsigned.pkg` unter [Releases](https://github.com/enesdigital/eps-finder/releases/latest) herunter. Dasselbe Paket unterstützt Intel und Apple Silicon.
+1. Lade `EPS-Finder-1.4.1-universal-unsigned.pkg` unter [Releases](https://github.com/enesdigital/eps-finder/releases/latest) herunter. Dasselbe Paket unterstützt Intel und Apple Silicon.
 2. Öffne die `.pkg`-Datei und folge dem Installationsassistenten. Die App wird unter `/Applications/EPS Finder.app` installiert; eine Administratorfreigabe ist erforderlich.
 3. Öffne EPS Finder einmal. Über **Beispieldatei anzeigen** wird die mitgelieferte EPS-Beispieldatei im Finder ausgewählt.
 
@@ -73,6 +73,6 @@ Die Tests für arm64 und x86_64 wurden erfolgreich ausgeführt; der Intel-Code l
 
 AGPL-3.0-or-later; siehe [LICENSE](LICENSE) und [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Gib das erzeugte Quellarchiv zusammen mit dem Binärpaket weiter.
 
-Unter [Releases](https://github.com/enesdigital/eps-finder/releases/latest) stehen Installationspaket, `EPS-Finder-1.4.0-source.zip` und die Datei `SHA256SUMS` bereit. Das ausdrücklich benannte Quellarchiv enthält auch die vollständigen Ghostscript- und Sparkle-Quellen. Die von GitHub automatisch erzeugten „Source code“-Archive enthalten dieses zusätzliche Archiv nicht.
+Unter [Releases](https://github.com/enesdigital/eps-finder/releases/latest) stehen Installationspaket, `EPS-Finder-1.4.1-source.zip` und die Datei `SHA256SUMS` bereit. Das ausdrücklich benannte Quellarchiv enthält auch die vollständigen Ghostscript- und Sparkle-Quellen. Die von GitHub automatisch erzeugten „Source code“-Archive enthalten dieses zusätzliche Archiv nicht.
 
 [Sparkle 2.10.1 · MIT · Ed25519 · appcast.xml](README.md#updates)
