@@ -20,6 +20,10 @@ run_for_user() {
     /bin/launchctl asuser "$console_uid" /usr/bin/sudo -H -u "$console_user" "$@"
 }
 
+if ! run_for_user "$app/Contents/MacOS/EPSFinder" --finish-install; then
+    echo "EPS Finder: open the app once to finish login-item setup and retire older copies." >&2
+fi
+
 if ! run_for_user /System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister -f "$app"; then
     echo "EPS Finder: open the application once to register Quick Look extensions." >&2
     exit 0

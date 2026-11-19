@@ -42,18 +42,19 @@ def info(identifier, executable, kind):
         "CFBundleDisplayName": "EPS Finder",
         "CFBundlePackageType": kind,
         "CFBundleInfoDictionaryVersion": "6.0",
-        "CFBundleShortVersionString": "1.2.0",
-        "CFBundleVersion": "5",
+        "CFBundleShortVersionString": "1.3.0",
+        "CFBundleVersion": "6",
         "CFBundleDevelopmentRegion": "en",
         "CFBundleLocalizations": list(LANGUAGES),
         "LSMinimumSystemVersion": "13.0",
     }
 
-def compile_file(filename, output, frameworks, common=False, rpath="@loader_path/../Frameworks"):
+def compile_file(filename, output, frameworks, common=False, rpath="@loader_path/../Frameworks", extra=()):
     output.parent.mkdir(parents=True, exist_ok=True)
     command = ["xcrun", "clang", "-arch", "arm64", "-arch", "x86_64",
                "-fobjc-arc", "-fblocks", "-O2", "-Wall", "-Wextra",
                "-Wno-unused-parameter", "-mmacosx-version-min=13.0", str(source / filename)]
+    command += [str(source / name) for name in extra]
     if common:
         command += [str(source / "Render.m"), "-I", str(headers / "psi"), "-I", str(headers / "base"),
                     str(prepared_library), "-Wl,-rpath," + rpath]
@@ -68,9 +69,10 @@ sandbox = {"com.apple.security.app-sandbox": True,
 write_plist(entitlements / "extension.plist", sandbox)
 
 app_info = info("local.epsfinder", "EPSFinder", "APPL")
-app_info.update({"NSPrincipalClass": "NSApplication", "LSApplicationCategoryType": "public.app-category.graphics-design"})
+app_info.update({"NSPrincipalClass": "NSApplication", "LSApplicationCategoryType": "public.app-category.graphics-design",
+                 "LSFileQuarantineEnabled": True})
 write_plist(contents / "Info.plist", app_info)
-compile_file("App.m", contents / "MacOS/EPSFinder", ["AppKit"])
+compile_file("App.m", contents / "MacOS/EPSFinder", ["AppKit", "CoreServices", "ServiceManagement"], extra=("Update.m", "Maintenance.m"))
 
 resources = contents / "Resources"
 resources.mkdir(parents=True, exist_ok=True)
@@ -136,6 +138,10 @@ for architecture in ("arm64", "x86_64"):
         apple_languages = "(" + ",".join('"' + value + '"' for value in preferences) + ")"
         subprocess.run(["arch", "-" + architecture, str(test_binary), language,
                         catalogs[language]["app.showSample"], catalogs[language]["error.invalidInput"],
-                        str(app), "-AppleLanguages", apple_languages], check=True, timeout=10)
+                        str(app), catalogs[language]["update.check"], catalogs[language]["startup.automatic"],
+                        "-AppleLanguages", apple_languages], check=True, timeout=10)
 print("PASS: five languages, regional variants, ordered preferences and English fallback on both architectures")
+compile_file("UpdateTest.m", destination / "update-self-check", ["Foundation", "CoreServices", "ServiceManagement"], extra=("Update.m", "Maintenance.m"))
+for architecture in ("arm64", "x86_64"):
+    subprocess.run(["arch", "-" + architecture, str(destination / "update-self-check")], check=True, timeout=15)
 print(app)

@@ -1,6 +1,6 @@
 # EPS Finder
 
-[Türkçe](README.md) · [English](README.en.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md)
+[English](README.md) · [Türkçe](README.tr.md) · [Deutsch](README.de.md) · [Français](README.fr.md) · [Español](README.es.md)
 
 Miniaturas EPS y previsualizaciones de Vista rápida con la barra espaciadora en el Finder de macOS.
 
@@ -10,7 +10,7 @@ La interfaz, los mensajes de error y las páginas de instalación están disponi
 
 ## Instalación
 
-1. Descarga `EPS-Finder-1.2.0-universal-unsigned.pkg` desde [Releases](https://github.com/enesdigital/eps-finder/releases/latest). El mismo paquete sirve para Intel y Apple Silicon.
+1. Descarga `EPS-Finder-1.3.0-universal-unsigned.pkg` desde [Releases](https://github.com/enesdigital/eps-finder/releases/latest). El mismo paquete sirve para Intel y Apple Silicon.
 2. Abre el archivo `.pkg` y sigue los pasos del instalador. La aplicación se instala en `/Applications/EPS Finder.app` y requiere autorización de administrador.
 3. Abre EPS Finder una vez. Pulsa **Mostrar archivo de ejemplo** para seleccionar el EPS de ejemplo incluido en el Finder.
 
@@ -22,6 +22,18 @@ Esta versión **no tiene firma Developer ID ni está notarizada por Apple**. mac
 
 Selecciona un archivo `.eps` en el Finder y pulsa la **barra espaciadora** para previsualizarlo. El Finder también genera miniaturas en la vista de iconos. Activa la previsualización de iconos en las opciones de visualización del Finder para mostrarlas.
 
+## Actualizaciones
+
+EPS Finder busca una versión estable más reciente en GitHub cada vez que abres la aplicación. Puedes desactivar **Buscar actualizaciones automáticamente al abrir EPS Finder** o usar **Buscar actualizaciones**.
+
+Si hay una nueva versión, pulsa **Descargar e instalar…**. La aplicación descarga el paquete universal de este repositorio, comprueba el tamaño y la suma SHA-256 proporcionada por GitHub y abre el instalador de macOS. EPS Finder se cierra al abrir el instalador para detener el proceso anterior. Completa la instalación con autorización de administrador y vuelve a abrir EPS Finder. **Notas de la versión** abre la página para descargar manualmente.
+
+Las versiones 1.2.0 y anteriores no tienen esta función: instala primero la versión 1.3.0 desde Releases. Después de instalar, EPS Finder se registra como ítem de inicio de macOS y busca actualizaciones en cada inicio de sesión. Puedes desactivar **Abrir EPS Finder al iniciar sesión** o usar Ajustes del Sistema → General → Ítems de inicio. Se respeta una opción desactivada en macOS. No se instala ningún servicio adicional en segundo plano. Solo la aplicación se conecta a GitHub y sus servidores de descarga. Los archivos EPS nunca se suben y las extensiones de Vista rápida no tienen permiso de red.
+
+El paquete sigue sin firma ni notarización. SHA-256 comprueba la integridad de la descarga; no sustituye una firma Developer ID ni la autorización de seguridad de macOS. Las descargas incompletas o incorrectas se eliminan. Si hay un error de red o se alcanza el límite de solicitudes de GitHub, inténtalo de nuevo más tarde.
+
+Tanto la instalación manual como la actualización sustituyen `/Applications/EPS Finder.app`. Las copias antiguas con el mismo identificador en `/Applications` y en `~/Applications` del usuario conectado se mueven a la Papelera. Las copias de otros usuarios se comprueban cuando abren la nueva aplicación. Se conservan las versiones iguales o más recientes, otras aplicaciones, los enlaces simbólicos y los documentos EPS. No se analizan otras carpetas. Si no se puede mover una copia, la aplicación avisa de que debe retirarse manualmente.
+
 ## Si no aparecen las previsualizaciones
 
 1. Comprueba que el archivo esté descargado en el Mac y que no sea únicamente un marcador de un archivo en la nube.
@@ -30,7 +42,7 @@ Selecciona un archivo `.eps` en el Finder y pulsa la **barra espaciadora** para 
 
 ## Procesamiento y límites
 
-La extensión de Vista rápida convierte el EPS en un PDF temporal dentro de su entorno aislado mediante el modo `SAFER` de Ghostscript. El procesamiento es local. El EPS original no se modifica y los archivos temporales se eliminan. La aplicación no solicita acceso a la red ni permisos amplios de acceso a archivos.
+La extensión de Vista rápida convierte el EPS en un PDF temporal dentro de su entorno aislado mediante el modo `SAFER` de Ghostscript. El procesamiento es local. El EPS original no se modifica y los archivos temporales se eliminan. Las extensiones de Vista rápida no tienen permiso de red ni acceso amplio a archivos. La aplicación principal solo usa la red para buscar y descargar actualizaciones.
 
 - Entrada máxima: 256 MB. PDF generado máximo: 64 MB.
 - Tiempo máximo: 8 segundos para miniaturas y 15 segundos para previsualizaciones.
@@ -49,7 +61,7 @@ python3 build.py
 python3 package.py
 ```
 
-Los scripts verifican el SHA-256 del archivo oficial de Ghostscript, compilan ambas arquitecturas, ejecutan las pruebas del motor y generan el instalador, el archivo completo de fuentes y las sumas de comprobación en `dist/`. La [guía en inglés](README.en.md#build) incluye más detalles.
+Los scripts verifican el SHA-256 del archivo oficial de Ghostscript, compilan ambas arquitecturas, ejecutan las pruebas del motor y generan el instalador, el archivo completo de fuentes y las sumas de comprobación en `dist/`. La [guía en inglés](README.md#build) incluye más detalles.
 
 Las pruebas arm64 y x86_64 se completaron correctamente; el código Intel se ejecutó con Rosetta en Apple Silicon. Quedan pendientes las pruebas en un Mac Intel físico, en la versión más antigua de macOS compatible y la instalación completa con autorización de administrador.
 
@@ -57,4 +69,4 @@ Las pruebas arm64 y x86_64 se completaron correctamente; el código Intel se eje
 
 AGPL-3.0-or-later; consulta [LICENSE](LICENSE) y [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Comparte el archivo de fuentes generado junto con el paquete binario.
 
-En [Releases](https://github.com/enesdigital/eps-finder/releases/latest) están el instalador, `EPS-Finder-1.2.0-source.zip` y un archivo `SHA256SUMS`. El archivo de fuentes con este nombre también incluye las fuentes completas de Ghostscript. Los archivos «Source code» que GitHub genera automáticamente no contienen ese archivo adicional.
+En [Releases](https://github.com/enesdigital/eps-finder/releases/latest) están el instalador, `EPS-Finder-1.3.0-source.zip` y un archivo `SHA256SUMS`. El archivo de fuentes con este nombre también incluye las fuentes completas de Ghostscript. Los archivos «Source code» que GitHub genera automáticamente no contienen ese archivo adicional.

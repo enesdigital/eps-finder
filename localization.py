@@ -8,7 +8,7 @@ LANGUAGES = ("en", "tr", "de", "fr", "es")
 PAGES = {
     "Welcome.html": ("installer.welcome.title", ("installer.welcome.description", "installer.requirements")),
     "ReadMe.html": ("installer.readme.title", ("installer.location", "installer.dependencies", "installer.firstUse",
-                    "installer.extensions", "installer.unsigned", "installer.privacy", "installer.license")),
+                    "installer.extensions", "installer.updates", "installer.startup", "installer.cleanup", "installer.unsigned", "installer.privacy", "installer.license")),
     "Conclusion.html": ("installer.conclusion.title", ("installer.conclusion.body", "installer.privacy")),
 }
 
@@ -20,9 +20,11 @@ def load_catalogs(root):
     for language, strings in catalogs.items():
         assert set(strings) == keys, "Incomplete localization: " + language
         assert all(isinstance(value, str) and value.strip() for value in strings.values()), language
-    code = "\n".join((root / name).read_text() for name in ("App.m", "Render.m"))
-    used = set(re.findall(r'(?:NSLocalizedString|EPSFailure)\(@"([^"]+)"', code))
+    code = "\n".join((root / name).read_text() for name in ("App.m", "Render.m", "Update.m"))
+    used = set(re.findall(r'@"((?:app|error|update|common|extension|startup|setup)\.[A-Za-z]+)"', code))
     assert used <= keys, "Missing runtime strings: " + str(used - keys)
+    for strings in catalogs.values():
+        assert all(strings[key].count("%@") == catalogs["en"][key].count("%@") for key in keys)
     return catalogs
 
 
