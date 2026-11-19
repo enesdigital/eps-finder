@@ -24,6 +24,8 @@ static NSArray<NSString *> *EPSVersion(id value) {
 
 BOOL EPSIsNewerVersion(NSString *candidate, NSString *installed) {
     NSArray *remote = EPSVersion(candidate), *local = EPSVersion(installed);
+    // The first release used the two-component version 1.0.
+    if (!local && [installed isKindOfClass:NSString.class]) local = EPSVersion([installed stringByAppendingString:@".0"]);
     if (!remote || !local) return NO;
     for (NSUInteger index = 0; index < 3; index++) {
         NSInteger a = [remote[index] integerValue], b = [local[index] integerValue];

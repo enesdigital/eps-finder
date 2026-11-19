@@ -35,4 +35,6 @@ for name in Preview Thumbnail; do
         echo "EPS Finder: enable Quick Look extensions in System Settings if previews are unavailable." >&2
     fi
 done
+# Resolve extension URLs again after replacing the application bundle.
+run_for_user /usr/bin/killall com.apple.quicklook.ThumbnailsAgent >/dev/null 2>&1 || true
 exit 0

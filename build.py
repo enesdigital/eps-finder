@@ -42,8 +42,8 @@ def info(identifier, executable, kind):
         "CFBundleDisplayName": "EPS Finder",
         "CFBundlePackageType": kind,
         "CFBundleInfoDictionaryVersion": "6.0",
-        "CFBundleShortVersionString": "1.3.0",
-        "CFBundleVersion": "6",
+        "CFBundleShortVersionString": "1.3.1",
+        "CFBundleVersion": "7",
         "CFBundleDevelopmentRegion": "en",
         "CFBundleLocalizations": list(LANGUAGES),
         "LSMinimumSystemVersion": "13.0",
@@ -70,12 +70,20 @@ write_plist(entitlements / "extension.plist", sandbox)
 
 app_info = info("local.epsfinder", "EPSFinder", "APPL")
 app_info.update({"NSPrincipalClass": "NSApplication", "LSApplicationCategoryType": "public.app-category.graphics-design",
-                 "LSFileQuarantineEnabled": True})
+                 "LSFileQuarantineEnabled": True, "CFBundleIconFile": "EPSFinder.icns"})
 write_plist(contents / "Info.plist", app_info)
 compile_file("App.m", contents / "MacOS/EPSFinder", ["AppKit", "CoreServices", "ServiceManagement"], extra=("Update.m", "Maintenance.m"))
 
 resources = contents / "Resources"
 resources.mkdir(parents=True, exist_ok=True)
+iconset = destination / "EPSFinder.iconset"
+iconset.mkdir(parents=True, exist_ok=True)
+for size in (16, 32, 128, 256, 512):
+    for scale in (1, 2):
+        name = "icon_" + str(size) + "x" + str(size) + ("@2x" if scale == 2 else "") + ".png"
+        subprocess.run(["sips", "-z", str(size * scale), str(size * scale), str(source / "assets/EPSFinder.png"),
+                        "--out", str(iconset / name)], check=True, stdout=subprocess.DEVNULL)
+subprocess.run(["iconutil", "-c", "icns", str(iconset), "-o", str(resources / "EPSFinder.icns")], check=True)
 write_bundle(contents, catalogs)
 shutil.copyfile(license_file, resources / "Ghostscript-COPYING.txt")
 shutil.copyfile(source / "tests/EPS-Test.eps", resources / "EPS-Test.eps")

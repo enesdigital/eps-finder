@@ -79,6 +79,10 @@ def package(app, output, archive):
         assert len(installed) == 1, "Installer must contain exactly one app at /Applications"
         payload = installed[0]
         verify_resources(payload, expanded / "Resources", catalogs)
+        assert app_info["CFBundleIconFile"] == "EPSFinder.icns"
+        icon = payload / "Contents/Resources/EPSFinder.icns"
+        assert icon.read_bytes().startswith(b"icns")
+        assert icon.read_bytes() == (app / "Contents/Resources/EPSFinder.icns").read_bytes()
         subprocess.run(["codesign", "--verify", "--deep", "--strict", str(payload)], check=True)
         binaries = [payload / "Contents/MacOS/EPSFinder",
                     *payload.glob("Contents/PlugIns/*.appex/Contents/MacOS/*"),
@@ -99,7 +103,7 @@ def package(app, output, archive):
             if source.is_file() and (source.suffix in (".m", ".h", ".py", ".md") or
                                      source.name in ("LICENSE", ".gitignore")):
                 file.write(source, prefix + "-source/" + source.name)
-        for relative in ("installer/postinstall", "tests/EPS-Test.eps"):
+        for relative in ("installer/postinstall", "tests/EPS-Test.eps", "assets/EPSFinder.png", "assets/ICON.md"):
             file.write(ROOT / relative, prefix + "-source/" + relative)
         for language in LANGUAGES:
             relative = "localizations/" + language + ".json"

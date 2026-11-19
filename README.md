@@ -8,9 +8,11 @@ EPS thumbnails and Space-bar Quick Look previews in macOS Finder.
 
 The app interface, error messages and installer pages are available in Turkish, English, German, French and Spanish. macOS selects the best match for your language preferences automatically, with English as the fallback.
 
+Release 1.3.1 adds the approved EPS app icon, recognizes legacy `1.0` copies during cleanup, and refreshes the thumbnail worker after upgrades so Finder stops using an old extension path. The [icon source and generation prompt](assets/ICON.md) are included.
+
 ## Install
 
-1. Download `EPS-Finder-1.3.0-universal-unsigned.pkg` from [Releases](https://github.com/enesdigital/eps-finder/releases/latest). The same package supports Intel and Apple Silicon.
+1. Download `EPS-Finder-1.3.1-universal-unsigned.pkg` from [Releases](https://github.com/enesdigital/eps-finder/releases/latest). The same package supports Intel and Apple Silicon.
 2. Open the `.pkg` and follow the installer. It installs `/Applications/EPS Finder.app` and requires administrator approval.
 3. Open EPS Finder once. Click **Show sample file** to reveal the bundled sample EPS in Finder.
 
@@ -28,7 +30,7 @@ EPS Finder checks GitHub for a newer stable release whenever you open the app. Y
 
 When an update is available, choose **Download and Install…**. The app downloads the universal package from this repository, checks its size and GitHub-provided SHA-256 digest, then opens the macOS installer. EPS Finder quits when the installer opens so its old process does not remain running. Complete the installation with administrator approval and reopen EPS Finder. **Release Notes** opens the release page if you prefer to download manually.
 
-Version 1.2.0 and earlier do not have an updater: install 1.3.0 once from Releases to get this feature. After installation, EPS Finder registers itself as a macOS login item, so it opens and checks for updates at each login. You can turn off **Start EPS Finder when I log in** or manage it in System Settings → General → Login Items. A setting disabled in macOS is respected. No separate background service is installed. Only the app contacts GitHub and its download servers. EPS files are never uploaded, and Quick Look extensions have no network entitlement.
+Version 1.2.0 and earlier do not have an updater: install 1.3.1 once from Releases to get this feature. After installation, EPS Finder registers itself as a macOS login item, so it opens and checks for updates at each login. You can turn off **Start EPS Finder when I log in** or manage it in System Settings → General → Login Items. A setting disabled in macOS is respected. No separate background service is installed. Only the app contacts GitHub and its download servers. EPS files are never uploaded, and Quick Look extensions have no network entitlement.
 
 The package remains unsigned and unnotarized. SHA-256 verifies download integrity; it does not replace a Developer ID signature or macOS security approval. Incomplete or mismatched downloads are discarded. GitHub rate limits and network errors can be retried later.
 
@@ -101,4 +103,4 @@ This checks the size and alignment of the included dark-background sample. Physi
 
 AGPL-3.0-or-later; see [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Share the generated source ZIP alongside the binary package.
 
-[Releases](https://github.com/enesdigital/eps-finder/releases/latest) contains the installer, `EPS-Finder-1.3.0-source.zip` and a `SHA256SUMS` file. Use this explicit source ZIP for the complete Ghostscript sources; GitHub’s automatically generated “Source code” archives do not include the bundled upstream archive.
+[Releases](https://github.com/enesdigital/eps-finder/releases/latest) contains the installer, `EPS-Finder-1.3.1-source.zip` and a `SHA256SUMS` file. Use this explicit source ZIP for the complete Ghostscript sources; GitHub’s automatically generated “Source code” archives do not include the bundled upstream archive.

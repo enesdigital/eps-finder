@@ -8,9 +8,11 @@ Miniatures EPS et aperçus Coup d’œil avec la barre d’espace dans le Finder
 
 L’interface, les messages d’erreur et les pages d’installation sont disponibles en turc, anglais, allemand, français et espagnol. macOS choisit automatiquement la langue adaptée à vos préférences ; l’anglais est utilisé si aucune langue prise en charge ne correspond.
 
+La version 1.3.1 ajoute la nouvelle icône EPS, reconnaît les anciennes copies numérotées `1.0` et relance le service de miniatures après une mise à jour pour que le Finder n’utilise plus un ancien chemin d’extension. [La source de l’icône et son prompt](assets/ICON.md) sont inclus.
+
 ## Installation
 
-1. Téléchargez `EPS-Finder-1.3.0-universal-unsigned.pkg` depuis la page [Releases](https://github.com/enesdigital/eps-finder/releases/latest). Le même paquet convient aux Mac Intel et Apple Silicon.
+1. Téléchargez `EPS-Finder-1.3.1-universal-unsigned.pkg` depuis la page [Releases](https://github.com/enesdigital/eps-finder/releases/latest). Le même paquet convient aux Mac Intel et Apple Silicon.
 2. Ouvrez le fichier `.pkg` et suivez l’assistant. L’application est installée dans `/Applications/EPS Finder.app` ; une autorisation d’administrateur est nécessaire.
 3. Ouvrez EPS Finder une fois. Cliquez sur **Afficher le fichier d’exemple** pour sélectionner l’exemple EPS fourni dans le Finder.
 
@@ -28,7 +30,7 @@ EPS Finder recherche une nouvelle version stable sur GitHub à chaque ouverture.
 
 Lorsqu’une mise à jour est disponible, cliquez sur **Télécharger et installer…**. L’application télécharge le paquet universel de ce dépôt, vérifie sa taille et la somme SHA-256 fournie par GitHub, puis ouvre le programme d’installation de macOS. EPS Finder se ferme à l’ouverture du programme d’installation pour arrêter l’ancien processus. Terminez avec une autorisation d’administrateur et rouvrez EPS Finder. **Notes de version** ouvre la page pour un téléchargement manuel.
 
-Les versions 1.2.0 et antérieures n’ont pas cette fonction : installez d’abord la version 1.3.0 depuis Releases. Après l’installation, EPS Finder est enregistré comme élément d’ouverture de session et recherche les mises à jour à chaque connexion. Vous pouvez désactiver **Ouvrir EPS Finder à l’ouverture de session** ou utiliser Réglages Système → Général → Ouverture de session. Un réglage désactivé dans macOS est respecté. Aucun service distinct en arrière-plan n’est installé. Seule l’application contacte GitHub et ses serveurs de téléchargement. Les fichiers EPS ne sont jamais envoyés et les extensions Coup d’œil n’ont pas d’autorisation réseau.
+Les versions 1.2.0 et antérieures n’ont pas cette fonction : installez d’abord la version 1.3.1 depuis Releases. Après l’installation, EPS Finder est enregistré comme élément d’ouverture de session et recherche les mises à jour à chaque connexion. Vous pouvez désactiver **Ouvrir EPS Finder à l’ouverture de session** ou utiliser Réglages Système → Général → Ouverture de session. Un réglage désactivé dans macOS est respecté. Aucun service distinct en arrière-plan n’est installé. Seule l’application contacte GitHub et ses serveurs de téléchargement. Les fichiers EPS ne sont jamais envoyés et les extensions Coup d’œil n’ont pas d’autorisation réseau.
 
 Le paquet reste non signé et non notarié. SHA-256 vérifie l’intégrité du téléchargement et ne remplace ni une signature Developer ID ni une autorisation de sécurité de macOS. Les téléchargements incomplets ou incorrects sont supprimés. En cas d’erreur réseau ou de limite de requêtes GitHub, réessayez plus tard.
 
@@ -69,4 +71,4 @@ Les tests arm64 et x86_64 ont réussi ; le code Intel a été exécuté avec Ros
 
 AGPL-3.0-or-later ; voir [LICENSE](LICENSE) et [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Distribuez l’archive des sources générée avec le paquet binaire.
 
-La page [Releases](https://github.com/enesdigital/eps-finder/releases/latest) propose le programme d’installation, `EPS-Finder-1.3.0-source.zip` et un fichier `SHA256SUMS`. L’archive des sources portant ce nom contient également les sources complètes de Ghostscript. Les archives « Source code » générées automatiquement par GitHub ne contiennent pas cette archive supplémentaire.
+La page [Releases](https://github.com/enesdigital/eps-finder/releases/latest) propose le programme d’installation, `EPS-Finder-1.3.1-source.zip` et un fichier `SHA256SUMS`. L’archive des sources portant ce nom contient également les sources complètes de Ghostscript. Les archives « Source code » générées automatiquement par GitHub ne contiennent pas cette archive supplémentaire.

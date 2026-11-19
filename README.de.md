@@ -8,9 +8,11 @@ EPS-Miniaturansichten und Vorschauen mit der Leertaste über Quick Look im macOS
 
 Die Benutzeroberfläche, Fehlermeldungen und Installationsseiten sind auf Türkisch, Englisch, Deutsch, Französisch und Spanisch verfügbar. macOS wählt automatisch die passende Sprache aus deinen Spracheinstellungen. Wenn keine unterstützte Sprache verfügbar ist, wird Englisch verwendet.
 
+Version 1.3.1 enthält das neue EPS-App-Symbol, erkennt ältere Kopien mit der Versionsnummer `1.0` und aktualisiert nach einem Upgrade den Miniaturansichtsdienst, damit der Finder keine veralteten Erweiterungspfade verwendet. [Symbolquelle und Generierungsprompt](assets/ICON.md) sind enthalten.
+
 ## Installation
 
-1. Lade `EPS-Finder-1.3.0-universal-unsigned.pkg` unter [Releases](https://github.com/enesdigital/eps-finder/releases/latest) herunter. Dasselbe Paket unterstützt Intel und Apple Silicon.
+1. Lade `EPS-Finder-1.3.1-universal-unsigned.pkg` unter [Releases](https://github.com/enesdigital/eps-finder/releases/latest) herunter. Dasselbe Paket unterstützt Intel und Apple Silicon.
 2. Öffne die `.pkg`-Datei und folge dem Installationsassistenten. Die App wird unter `/Applications/EPS Finder.app` installiert; eine Administratorfreigabe ist erforderlich.
 3. Öffne EPS Finder einmal. Über **Beispieldatei anzeigen** wird die mitgelieferte EPS-Beispieldatei im Finder ausgewählt.
 
@@ -28,7 +30,7 @@ EPS Finder sucht bei jedem Öffnen auf GitHub nach einer neueren stabilen Versio
 
 Wähle bei einer neuen Version **Laden und installieren…**. Die App lädt das universelle Paket aus diesem Repository, prüft Dateigröße und den von GitHub bereitgestellten SHA-256-Wert und öffnet das macOS-Installationsprogramm. EPS Finder wird beim Öffnen des Installationsprogramms beendet, damit der alte Prozess nicht weiterläuft. Schließe die Installation mit Administratorfreigabe ab und öffne EPS Finder erneut. **Versionshinweise** öffnet die Seite für den manuellen Download.
 
-Version 1.2.0 und älter haben keinen Updater. Installiere zunächst einmal Version 1.3.0 über Releases. Nach der Installation registriert sich EPS Finder als macOS-Anmeldeobjekt und sucht bei jeder Anmeldung nach Updates. Du kannst **EPS Finder bei der Anmeldung starten** deaktivieren oder die Systemeinstellungen → Allgemein → Anmeldeobjekte verwenden. Eine dort deaktivierte Einstellung wird respektiert. Es wird kein zusätzlicher Hintergrunddienst installiert. Nur die App verbindet sich mit GitHub und dessen Download-Servern. EPS-Dateien werden nicht hochgeladen; die Quick-Look-Erweiterungen erhalten keinen Netzwerkzugriff.
+Version 1.2.0 und älter haben keinen Updater. Installiere zunächst einmal Version 1.3.1 über Releases. Nach der Installation registriert sich EPS Finder als macOS-Anmeldeobjekt und sucht bei jeder Anmeldung nach Updates. Du kannst **EPS Finder bei der Anmeldung starten** deaktivieren oder die Systemeinstellungen → Allgemein → Anmeldeobjekte verwenden. Eine dort deaktivierte Einstellung wird respektiert. Es wird kein zusätzlicher Hintergrunddienst installiert. Nur die App verbindet sich mit GitHub und dessen Download-Servern. EPS-Dateien werden nicht hochgeladen; die Quick-Look-Erweiterungen erhalten keinen Netzwerkzugriff.
 
 Das Paket bleibt unsigniert und nicht notarisiert. SHA-256 prüft die Integrität des Downloads und ersetzt weder eine Developer-ID-Signatur noch eine macOS-Sicherheitsfreigabe. Unvollständige oder fehlerhafte Downloads werden gelöscht. Bei Netzwerkfehlern oder einem GitHub-Anfragelimit kannst du es später erneut versuchen.
 
@@ -69,4 +71,4 @@ Die Tests für arm64 und x86_64 wurden erfolgreich ausgeführt; der Intel-Code l
 
 AGPL-3.0-or-later; siehe [LICENSE](LICENSE) und [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Gib das erzeugte Quellarchiv zusammen mit dem Binärpaket weiter.
 
-Unter [Releases](https://github.com/enesdigital/eps-finder/releases/latest) stehen Installationspaket, `EPS-Finder-1.3.0-source.zip` und die Datei `SHA256SUMS` bereit. Das ausdrücklich benannte Quellarchiv enthält auch die vollständigen Ghostscript-Quellen. Die von GitHub automatisch erzeugten „Source code“-Archive enthalten dieses zusätzliche Archiv nicht.
+Unter [Releases](https://github.com/enesdigital/eps-finder/releases/latest) stehen Installationspaket, `EPS-Finder-1.3.1-source.zip` und die Datei `SHA256SUMS` bereit. Das ausdrücklich benannte Quellarchiv enthält auch die vollständigen Ghostscript-Quellen. Die von GitHub automatisch erzeugten „Source code“-Archive enthalten dieses zusätzliche Archiv nicht.

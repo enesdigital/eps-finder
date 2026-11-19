@@ -8,9 +8,11 @@ Finder’da EPS küçük resimleri ve boşluk tuşuyla Hızlı Bakış önizleme
 
 Uygulama arayüzü, hata mesajları ve kurulum sayfaları Türkçe, İngilizce, Almanca, Fransızca ve İspanyolca sunulur. macOS dil tercihlerinize göre otomatik seçim yapar; desteklenen bir dil bulunamazsa İngilizce kullanılır.
 
+1.3.1 sürümü yeni EPS simgesini içerir, temizlik sırasında eski `1.0` kopyalarını tanır ve güncellemeden sonra küçük resim hizmetini yenileyerek Finder’ın eski uzantı yolunu kullanmasını önler. [Simge kaynağı ve üretim istemi](assets/ICON.md) depoya dahildir.
+
 ## Kurulum
 
-1. [Releases sayfasından](https://github.com/enesdigital/eps-finder/releases/latest) `EPS-Finder-1.3.0-universal-unsigned.pkg` dosyasını indirin. Intel ve Apple Silicon için aynı paket kullanılır.
+1. [Releases sayfasından](https://github.com/enesdigital/eps-finder/releases/latest) `EPS-Finder-1.3.1-universal-unsigned.pkg` dosyasını indirin. Intel ve Apple Silicon için aynı paket kullanılır.
 2. `.pkg` dosyasını açıp kurulum adımlarını izleyin. Uygulama `/Applications/EPS Finder.app` konumuna kurulur; yönetici onayı gerekir.
 3. Uygulamayı bir kez açın. **Örnek dosyayı göster** düğmesi, paketteki örnek EPS’yi Finder’da seçer.
 
@@ -28,7 +30,7 @@ EPS Finder her açıldığında GitHub’daki yeni kararlı sürümü kontrol ed
 
 Yeni sürüm varsa **İndir ve Kur…** düğmesine basın. Uygulama bu depodaki universal paketi indirir, boyutunu ve GitHub’ın sağladığı SHA-256 değerini doğrular, ardından macOS kurulum ekranını açar. Eski işlem çalışmaya devam etmesin diye kurulum ekranı açılınca EPS Finder kapanır. Yönetici onayıyla kurulumu tamamlayıp EPS Finder’ı yeniden açın. Elle indirmek için **Sürüm Notları** düğmesini kullanabilirsiniz.
 
-1.2.0 ve önceki sürümlerde bu özellik yoktur; önce Releases sayfasından 1.3.0 sürümünü bir kez kurun. Kurulumdan sonra EPS Finder macOS giriş öğesi olarak kaydedilir; her oturum açılışında başlar ve güncellemeleri kontrol eder. **Oturum açıldığında EPS Finder’ı başlat** seçeneğini kapatabilir veya Sistem Ayarları → Genel → Giriş Öğeleri bölümünden yönetebilirsiniz. macOS’ta kapatılan ayara uyulur. Ayrı bir arka plan servisi kurulmaz. Yalnızca uygulama GitHub’a ve indirme sunucularına bağlanır. EPS dosyaları yüklenmez, Quick Look uzantıları ağ izni almaz.
+1.2.0 ve önceki sürümlerde bu özellik yoktur; önce Releases sayfasından 1.3.1 sürümünü bir kez kurun. Kurulumdan sonra EPS Finder macOS giriş öğesi olarak kaydedilir; her oturum açılışında başlar ve güncellemeleri kontrol eder. **Oturum açıldığında EPS Finder’ı başlat** seçeneğini kapatabilir veya Sistem Ayarları → Genel → Giriş Öğeleri bölümünden yönetebilirsiniz. macOS’ta kapatılan ayara uyulur. Ayrı bir arka plan servisi kurulmaz. Yalnızca uygulama GitHub’a ve indirme sunucularına bağlanır. EPS dosyaları yüklenmez, Quick Look uzantıları ağ izni almaz.
 
 Paket imzasızdır ve Apple notarizasyonu içermez. SHA-256 indirme bütünlüğünü doğrular; Developer ID imzası veya macOS güvenlik onayı yerine geçmez. Eksik veya eşleşmeyen indirmeler silinir. Ağ hatası ya da GitHub istek sınırı durumunda daha sonra yeniden deneyebilirsiniz.
 
@@ -93,6 +95,6 @@ Bu görsel kontrol paketteki koyu zeminli örneğin doğru boyutta ve ortalanmı
 
 AGPL-3.0-or-later; tam metin [LICENSE](LICENSE) dosyasında. Ghostscript ve derleme uyarlaması [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) içinde açıklanır. İkili paketle birlikte oluşturulan kaynak ZIP’i de paylaşın.
 
-[Releases](https://github.com/enesdigital/eps-finder/releases/latest) bölümünde kurulum paketi, tam Ghostscript kaynaklarını içeren kaynak ZIP’i ve `SHA256SUMS` dosyası bulunur. ZIP adı `EPS-Finder-1.3.0-source.zip` şeklindedir; GitHub’ın otomatik oluşturduğu “Source code” arşivinden farklı olarak Ghostscript kaynak arşivini de içerir.
+[Releases](https://github.com/enesdigital/eps-finder/releases/latest) bölümünde kurulum paketi, tam Ghostscript kaynaklarını içeren kaynak ZIP’i ve `SHA256SUMS` dosyası bulunur. ZIP adı `EPS-Finder-1.3.1-source.zip` şeklindedir; GitHub’ın otomatik oluşturduğu “Source code” arşivinden farklı olarak Ghostscript kaynak arşivini de içerir.
 
 Apple belgeleri: [Universal macOS binary](https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary), [Quick Look UI](https://developer.apple.com/documentation/quicklookui), [notarizasyon](https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution).

@@ -17,6 +17,8 @@ static void Rejected(id object) {
 }
 static void SelfCheck(void) {
     NSError *error = nil;
+    NSCAssert(EPSIsNewerVersion(@"1.3.0", @"1.0"), @"Legacy 1.0 must be retired");
+    NSCAssert(!EPSIsNewerVersion(@"1.3.0", @"1.0.0.0"), @"Invalid legacy version accepted");
     EPSUpdate *update = EPSAvailableUpdate(JSON(Release(@"1.10.0")), @"1.9.9", &error);
     NSCAssert([update.version isEqual:@"1.10.0"] && !error, @"Numeric version comparison failed");
     NSCAssert(EPSAvailableUpdate(JSON(Release(@"2.0.0")), @"1.99.99", &error), @"Major version comparison failed");
@@ -61,7 +63,7 @@ static void SelfCheck(void) {
     [manager createSymbolicLinkAtURL:link withDestinationURL:file error:nil];
     NSCAssert(!EPSVerifyPackage(link, update, &error), @"Symbolic link accepted");
     NSURL *apps = [directory URLByAppendingPathComponent:@"Applications"];
-    NSArray *fixtures = @[@[@"Current.app", @"local.epsfinder", @"1.3.0"], @[@"Old.app", @"local.epsfinder", @"1.0.0"],
+    NSArray *fixtures = @[@[@"Current.app", @"local.epsfinder", @"1.3.0"], @[@"Old.app", @"local.epsfinder", @"1.0.0"], @[@"Legacy.app", @"local.epsfinder", @"1.0"],
                          @[@"Equal.app", @"local.epsfinder", @"1.3.0"], @[@"Future.app", @"local.epsfinder", @"2.0.0"],
                          @[@"Unrelated.app", @"example.other", @"1.0.0"], @[@"Unknown.app", @"local.epsfinder", @"invalid"]];
     for (NSArray *fixture in fixtures) {
@@ -71,7 +73,8 @@ static void SelfCheck(void) {
     }
     [manager createSymbolicLinkAtURL:[apps URLByAppendingPathComponent:@"Linked.app"] withDestinationURL:[apps URLByAppendingPathComponent:@"Old.app"] error:nil];
     NSArray *copies = EPSOlderCopies(@[apps], [apps URLByAppendingPathComponent:@"Current.app"]);
-    NSCAssert(copies.count == 1 && [[copies[0] lastPathComponent] isEqual:@"Old.app"], @"Unsafe old-version selection: %@", copies);
+    NSSet *expectedCopies = [NSSet setWithArray:@[@"Old.app", @"Legacy.app"]];
+    NSCAssert(copies.count == 2 && [[NSSet setWithArray:[copies valueForKey:@"lastPathComponent"]] isEqual:expectedCopies], @"Unsafe old-version selection: %@", copies);
     [manager removeItemAtURL:directory error:nil];
     printf("PASS: numeric versions, no downgrade, malformed releases, trusted URLs, asset metadata, SHA256, file size/type and safe old-version selection\n");
 }

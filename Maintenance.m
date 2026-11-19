@@ -22,13 +22,22 @@ NSArray<NSURL *> *EPSOlderCopies(NSArray<NSURL *> *directories, NSURL *installed
 BOOL EPSRetireOlderCopies(NSURL *installedApp, NSError **error) {
     NSArray *directories = @[[NSURL fileURLWithPath:@"/Applications" isDirectory:YES],
                              [NSURL fileURLWithPath:[NSHomeDirectory() stringByAppendingPathComponent:@"Applications"] isDirectory:YES]];
-    BOOL success = YES;
+    BOOL success = YES, retired = NO;
     for (NSURL *old in EPSOlderCopies(directories, installedApp)) {
         NSError *failure = nil;
         if (![NSFileManager.defaultManager trashItemAtURL:old resultingItemURL:nil error:&failure]) {
             success = NO;
             if (error) *error = failure;
-        }
+        } else retired = YES;
+    }
+    if (retired) {
+        // Quick Look keeps old extension URLs until its thumbnail worker restarts.
+        NSTask *refresh = [NSTask new];
+        refresh.executableURL = [NSURL fileURLWithPath:@"/usr/bin/killall"];
+        refresh.arguments = @[@"-u", NSUserName(), @"com.apple.quicklook.ThumbnailsAgent"];
+        refresh.standardOutput = NSFileHandle.fileHandleWithNullDevice;
+        refresh.standardError = NSFileHandle.fileHandleWithNullDevice;
+        if ([refresh launchAndReturnError:nil]) [refresh waitUntilExit];
     }
     return success;
 }
