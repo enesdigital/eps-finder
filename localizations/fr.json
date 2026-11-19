@@ -45,5 +45,5 @@
   "setup.cleanupFailed": "Certaines anciennes copies n’ont pas pu être placées dans la Corbeille. Supprimez manuellement les anciennes copies d’EPS Finder des dossiers Applications.",
   "installer.startup": "Après l’installation, EPS Finder est enregistré pour s’ouvrir à la connexion et rechercher les mises à jour. Vous pouvez modifier ces deux options dans l’application. macOS peut demander une autorisation dans les réglages d’ouverture de session.",
   "installer.cleanup": "La nouvelle application remplace l’ancienne version dans /Applications. Les anciennes copies d’EPS Finder dans Applications et votre dossier Applications personnel sont placées dans la Corbeille. Vos documents EPS restent intacts.",
-  "update.releaseNotes": "Version de vérification des mises à jour. Les fonctions de 1.4.0 sont conservées. Cette version permet de tester le téléchargement réel depuis GitHub, la vérification des signatures, l’installation intégrée et le redémarrage automatique."
+  "update.releaseNotes": "EPS Finder 1.4.1 : miniatures EPS et aperçus Coup d’œil dans le Finder, mises à jour signées dans l’application, lancement automatique à l’ouverture de session et prise en charge de l’anglais, du turc, de l’allemand, du français et de l’espagnol."
 }

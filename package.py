@@ -36,7 +36,7 @@ def package(app, output, archive, sparkle):
         "caf199e3f233f1290b27d0972d636f66c303355f2353309b7bfddf1edda06b3d", "Unexpected Ghostscript source archive"
     output.mkdir(parents=True, exist_ok=True)
     prefix = "EPS-Finder-" + version
-    installer = output / (prefix + "-universal-unsigned.pkg")
+    installer = output / (prefix + "-build" + app_info["CFBundleVersion"] + "-universal-unsigned.pkg")
     sources = output / (prefix + "-source.zip")
     with tempfile.TemporaryDirectory(prefix="eps-finder-package-") as temporary:
         work = pathlib.Path(temporary)

@@ -8,11 +8,11 @@ EPS thumbnails and Space-bar Quick Look previews in macOS Finder.
 
 The app interface, error messages and installer pages are available in Turkish, English, German, French and Spanish. macOS selects the best match for your language preferences automatically, with English as the fallback.
 
-Release 1.4.0 adds verified in-app updates with Sparkle. [EPS icon](assets/ICON.md).
+EPS Finder 1.4.1 includes signed in-app updates, startup at login and automatic cleanup of older app copies. [EPS icon](assets/ICON.md).
 
 ## Install
 
-1. Download `EPS-Finder-1.4.1-universal-unsigned.pkg` from [Releases](https://github.com/enesdigital/eps-finder/releases/latest). The same package supports Intel and Apple Silicon.
+1. Download `EPS-Finder-1.4.1-build11-universal-unsigned.pkg` from [Releases](https://github.com/enesdigital/eps-finder/releases/latest). The same package supports Intel and Apple Silicon.
 2. Open the `.pkg` and follow the installer. It installs `/Applications/EPS Finder.app` and requires administrator approval.
 3. Open EPS Finder once. Click **Show sample file** to reveal the bundled sample EPS in Finder.
 
@@ -89,7 +89,7 @@ The maintenance self-check covers numeric and legacy versions and safe selection
 
 Release signing requires the matching private key in the macOS login Keychain under account `eps-finder`. A new maintainer must generate their own key with Sparkle’s `bin/generate_keys --account eps-finder` and update `PUBLIC_KEY` in `sparkle.py` before distributing their first build. Existing installations only trust the embedded public key. Never commit or include a private key in release archives.
 
-Publish stable releases as `vMAJOR.MINOR.PATCH`, increasing both the display version and `CFBundleVersion` in `build.py`. Upload all generated `dist/` assets, including `appcast.xml`, together. The feed URL follows GitHub’s latest stable release. `package.py` signs the package and feed using Sparkle’s official tool; modifying either afterward requires re-signing. Verify uploaded SHA-256 values before publishing the release.
+Publish stable releases as `vMAJOR.MINOR.PATCH`, increasing `CFBundleVersion` in `build.py` for every published build. The display version identifies the release; the installer filename also includes the build number so revised packages have distinct download URLs. Upload all generated `dist/` assets, including `appcast.xml`, together. The feed URL follows GitHub’s latest stable release. `package.py` signs the package and feed using Sparkle’s official tool; modifying either afterward requires re-signing. Verify uploaded SHA-256 values before publishing the release.
 
 After installation, test actual Retina thumbnail generation with:
 
@@ -97,7 +97,7 @@ After installation, test actual Retina thumbnail generation with:
 build/app/check-finder "$PWD/tests/EPS-Test.eps" /private/tmp/eps-finder-thumbnail.png
 ```
 
-This checks the size and alignment of the included dark-background sample. A package-installed 1.3.2 test build successfully checked a signed local feed, downloaded and verified the 1.4.0 package, installed it in-app and relaunched as 1.4.0. Login/update preferences were preserved and the real Retina thumbnail check passed after the upgrade. The shipping build uses the GitHub HTTPS feed; the local test feed is not included. Physical Intel hardware, macOS 13 and a real logout/reboot still require testing. Intel checks run through Rosetta on Apple Silicon.
+This checks the size and alignment of the included dark-background sample. The GitHub upgrade from 1.4.0 to 1.4.1 completed inside the app, including signature checks, installation and automatic relaunch. Login/update preferences were preserved and the Retina thumbnail check passed afterward. Physical Intel hardware, macOS 13 and a real logout/reboot still require testing. Intel checks run through Rosetta on Apple Silicon.
 
 ## License and release files
 

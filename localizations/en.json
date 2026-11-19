@@ -45,5 +45,5 @@
   "setup.cleanupFailed": "Some older copies could not be moved to Trash. Remove older EPS Finder copies from Applications manually.",
   "installer.startup": "After installation, EPS Finder is registered to open at login and check for updates. You can change both options in the app. macOS may require approval in Login Items settings.",
   "installer.cleanup": "The installed app replaces the previous version in /Applications. Older EPS Finder copies in Applications and your personal Applications folder are moved to Trash. EPS documents are not touched.",
-  "update.releaseNotes": "Update verification release. This version keeps the features of 1.4.0 and exercises the real GitHub download, signature verification, in-app installation and automatic relaunch."
+  "update.releaseNotes": "EPS Finder 1.4.1: EPS thumbnails and Quick Look previews in Finder, signed in-app updates, automatic startup at login and support for English, Turkish, German, French and Spanish."
 }

@@ -45,5 +45,5 @@
   "setup.cleanupFailed": "Bazı eski kopyalar Çöp’e taşınamadı. Uygulamalar klasörlerindeki eski EPS Finder kopyalarını elle kaldırın.",
   "installer.startup": "Kurulumdan sonra EPS Finder oturum açıldığında başlayacak ve güncellemeleri kontrol edecek şekilde kaydedilir. İki seçeneği de uygulamadan değiştirebilirsiniz. macOS, Giriş Öğeleri ayarlarında onay isteyebilir.",
   "installer.cleanup": "Yeni uygulama /Applications içindeki önceki sürümün yerini alır. Uygulamalar ve kişisel Applications klasörünüzdeki eski EPS Finder kopyaları Çöp’e taşınır. EPS belgelerinize dokunulmaz.",
-  "update.releaseNotes": "Güncelleme doğrulama sürümü. 1.4.0 özellikleri korunur; GitHub’dan gerçek indirme, imza doğrulama, uygulama içi kurulum ve otomatik yeniden başlatma akışını sınamak için yayımlanmıştır."
+  "update.releaseNotes": "EPS Finder 1.4.1: Finder’da EPS küçük resimleri ve Quick Look önizlemeleri, imzalı uygulama içi güncellemeler, oturum açılışında otomatik başlatma ve İngilizce, Türkçe, Almanca, Fransızca ve İspanyolca dil desteği."
 }

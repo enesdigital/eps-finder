@@ -12,7 +12,7 @@ Uygulama arayüzü, hata mesajları ve kurulum sayfaları Türkçe, İngilizce, 
 
 ## Kurulum
 
-1. [Releases sayfasından](https://github.com/enesdigital/eps-finder/releases/latest) `EPS-Finder-1.4.1-universal-unsigned.pkg` dosyasını indirin. Intel ve Apple Silicon için aynı paket kullanılır.
+1. [Releases sayfasından](https://github.com/enesdigital/eps-finder/releases/latest) `EPS-Finder-1.4.1-build11-universal-unsigned.pkg` dosyasını indirin. Intel ve Apple Silicon için aynı paket kullanılır.
 2. `.pkg` dosyasını açıp kurulum adımlarını izleyin. Uygulama `/Applications/EPS Finder.app` konumuna kurulur; yönetici onayı gerekir.
 3. Uygulamayı bir kez açın. **Örnek dosyayı göster** düğmesi, paketteki örnek EPS’yi Finder’da seçer.
 
@@ -89,7 +89,7 @@ Yayınlamak için Anahtar Zinciri’nde `eps-finder` hesabına ait özel güncel
 
 AGPL-3.0-or-later; tam metin [LICENSE](LICENSE) dosyasında. Ghostscript ve derleme uyarlaması [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) içinde açıklanır. İkili paketle birlikte oluşturulan kaynak ZIP’i de paylaşın.
 
-1.4.0 sürümü Sparkle ile doğrulanan uygulama içi güncellemeleri ekler. [EPS icon](assets/ICON.md).
+EPS Finder 1.4.1; imzalı uygulama içi güncellemeleri, oturum açılışında başlatmayı ve eski uygulama kopyalarının otomatik temizlenmesini içerir. [EPS simgesi](assets/ICON.md).
 
 Apple belgeleri: [Universal macOS binary](https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary), [Quick Look UI](https://developer.apple.com/documentation/quicklookui), [notarizasyon](https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution).
 

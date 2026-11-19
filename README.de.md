@@ -8,11 +8,11 @@ EPS-Miniaturansichten und Vorschauen mit der Leertaste über Quick Look im macOS
 
 Die Benutzeroberfläche, Fehlermeldungen und Installationsseiten sind auf Türkisch, Englisch, Deutsch, Französisch und Spanisch verfügbar. macOS wählt automatisch die passende Sprache aus deinen Spracheinstellungen. Wenn keine unterstützte Sprache verfügbar ist, wird Englisch verwendet.
 
-Version 1.4.0 ergänzt überprüfte Updates innerhalb der App mit Sparkle. [EPS icon](assets/ICON.md).
+EPS Finder 1.4.1 bietet signierte Updates in der App, den Start bei der Anmeldung und die automatische Bereinigung älterer App-Kopien. [EPS-Symbol](assets/ICON.md).
 
 ## Installation
 
-1. Lade `EPS-Finder-1.4.1-universal-unsigned.pkg` unter [Releases](https://github.com/enesdigital/eps-finder/releases/latest) herunter. Dasselbe Paket unterstützt Intel und Apple Silicon.
+1. Lade `EPS-Finder-1.4.1-build11-universal-unsigned.pkg` unter [Releases](https://github.com/enesdigital/eps-finder/releases/latest) herunter. Dasselbe Paket unterstützt Intel und Apple Silicon.
 2. Öffne die `.pkg`-Datei und folge dem Installationsassistenten. Die App wird unter `/Applications/EPS Finder.app` installiert; eine Administratorfreigabe ist erforderlich.
 3. Öffne EPS Finder einmal. Über **Beispieldatei anzeigen** wird die mitgelieferte EPS-Beispieldatei im Finder ausgewählt.
 

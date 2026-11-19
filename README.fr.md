@@ -8,11 +8,11 @@ Miniatures EPS et aperçus Coup d’œil avec la barre d’espace dans le Finder
 
 L’interface, les messages d’erreur et les pages d’installation sont disponibles en turc, anglais, allemand, français et espagnol. macOS choisit automatiquement la langue adaptée à vos préférences ; l’anglais est utilisé si aucune langue prise en charge ne correspond.
 
-La version 1.4.0 ajoute les mises à jour vérifiées dans l’application avec Sparkle. [EPS icon](assets/ICON.md).
+EPS Finder 1.4.1 propose les mises à jour signées dans l’application, le lancement à l’ouverture de session et le nettoyage automatique des anciennes copies. [Icône EPS](assets/ICON.md).
 
 ## Installation
 
-1. Téléchargez `EPS-Finder-1.4.1-universal-unsigned.pkg` depuis la page [Releases](https://github.com/enesdigital/eps-finder/releases/latest). Le même paquet convient aux Mac Intel et Apple Silicon.
+1. Téléchargez `EPS-Finder-1.4.1-build11-universal-unsigned.pkg` depuis la page [Releases](https://github.com/enesdigital/eps-finder/releases/latest). Le même paquet convient aux Mac Intel et Apple Silicon.
 2. Ouvrez le fichier `.pkg` et suivez l’assistant. L’application est installée dans `/Applications/EPS Finder.app` ; une autorisation d’administrateur est nécessaire.
 3. Ouvrez EPS Finder une fois. Cliquez sur **Afficher le fichier d’exemple** pour sélectionner l’exemple EPS fourni dans le Finder.
 

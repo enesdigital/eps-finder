@@ -46,7 +46,7 @@ def info(identifier, executable, kind):
         "CFBundlePackageType": kind,
         "CFBundleInfoDictionaryVersion": "6.0",
         "CFBundleShortVersionString": "1.4.1",
-        "CFBundleVersion": "10",
+        "CFBundleVersion": "11",
         "CFBundleDevelopmentRegion": "en",
         "CFBundleLocalizations": list(LANGUAGES),
         "LSMinimumSystemVersion": "13.0",
