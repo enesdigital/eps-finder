@@ -7,9 +7,9 @@
         [NSApp activateIgnoringOtherApps:YES];
         NSAlert *alert = [NSAlert new];
         alert.messageText = @"EPS Finder";
-        alert.informativeText = @"Finder’da bir EPS dosyası seçip boşluk tuşuna basın. Simge görünümünde küçük resimler de üretilir.\n\nÖnizleme görünmüyorsa Sistem Ayarları’nda ‘Uzantılar’ veya ‘Hızlı Bakış’ araması yapıp EPS Finder uzantılarını etkinleştirin.\n\nDosyalar yerel olarak işlenir; kaynak EPS değiştirilmez.";
-        [alert addButtonWithTitle:@"Örnek dosyayı göster"];
-        [alert addButtonWithTitle:@"Tamam"];
+        alert.informativeText = NSLocalizedString(@"app.instructions", nil);
+        [alert addButtonWithTitle:NSLocalizedString(@"app.showSample", nil)];
+        [alert addButtonWithTitle:NSLocalizedString(@"common.ok", nil)];
         if ([alert runModal] == NSAlertFirstButtonReturn) {
             NSURL *sample = [NSBundle.mainBundle URLForResource:@"EPS-Test" withExtension:@"eps"];
             if (sample) [NSWorkspace.sharedWorkspace activateFileViewerSelectingURLs:@[sample]];

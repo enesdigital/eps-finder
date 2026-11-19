@@ -6,11 +6,13 @@ EPS thumbnails and Space-bar Quick Look previews in macOS Finder.
 
 **Universal 2:** Intel (`x86_64`) and Apple Silicon (`arm64`). **macOS 13 or later.** Ghostscript is bundled; users do not need Homebrew, Python, Illustrator or Rosetta to run the app.
 
+The app interface, error messages and installer pages are available in Turkish, English, German, French and Spanish. macOS selects the best match for your language preferences automatically, with English as the fallback.
+
 ## Install
 
-1. Download `EPS-Finder-1.1.0-universal-unsigned.pkg` from [Releases](https://github.com/enesdigital/eps-finder/releases/latest). The same package supports Intel and Apple Silicon.
+1. Download `EPS-Finder-1.2.0-universal-unsigned.pkg` from [Releases](https://github.com/enesdigital/eps-finder/releases/latest). The same package supports Intel and Apple Silicon.
 2. Open the `.pkg` and follow the installer. It installs `/Applications/EPS Finder.app` and requires administrator approval.
-3. Open EPS Finder once. Click **Örnek dosyayı göster** (“Show sample file”) to reveal the bundled sample EPS in Finder. The app’s own dialog is currently in Turkish.
+3. Open EPS Finder once. Click **Show sample file** to reveal the bundled sample EPS in Finder.
 
 The installer registers the Quick Look extensions for the signed-in user. Other user accounts may need to open the app once as well.
 
@@ -23,7 +25,7 @@ Select an `.eps` file in Finder and press **Space** to preview it. Finder also g
 ## If previews do not appear
 
 1. Make sure the file is downloaded to your Mac rather than available only as a cloud placeholder.
-2. Open EPS Finder once. Search System Settings for **Extensions / Quick Look** and enable **EPS Finder — Preview** and **EPS Finder — Thumbnail**. The setting’s location varies by macOS version.
+2. Open EPS Finder once. Search System Settings for **Extensions / Quick Look** and enable **EPS Finder — Preview** and **EPS Finder — Thumbnails**. The setting’s location varies by macOS version.
 3. Check Finder’s icon-preview option. Damaged EPS files or files requiring external resources may not render.
 
 ## Processing and limits
@@ -63,6 +65,8 @@ When building from the release source ZIP, use `--source-archive vendor/ghostscr
 
 ## Validation
 
+The build also tests native macOS localization on both architectures: all five languages, localized app and extension strings, error messages, regional language codes, ordered preferences and English fallback. Translations are maintained in `localizations/*.json` and compiled into standard `.lproj` resources. The installer uses localized welcome, readme and conclusion pages.
+
 The renderer checks cover ASCII and DOS binary EPS, bounding-box cropping, Unicode and percent signs in paths, unchanged originals, invalid input, blocked unrelated file reads, timeout and recovery. Both arm64 and x86_64 checks passed; the Intel code was executed through Rosetta on Apple Silicon.
 
 After installation, test actual Retina thumbnail generation with:
@@ -77,4 +81,4 @@ This checks the size and alignment of the included dark-background sample. Physi
 
 AGPL-3.0-or-later; see [LICENSE](LICENSE) and [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Share the generated source ZIP alongside the binary package.
 
-[Releases](https://github.com/enesdigital/eps-finder/releases/latest) contains the installer, `EPS-Finder-1.1.0-source.zip` and a `SHA256SUMS` file. Use this explicit source ZIP for the complete Ghostscript sources; GitHub’s automatically generated “Source code” archives do not include the bundled upstream archive.
+[Releases](https://github.com/enesdigital/eps-finder/releases/latest) contains the installer, `EPS-Finder-1.2.0-source.zip` and a `SHA256SUMS` file. Use this explicit source ZIP for the complete Ghostscript sources; GitHub’s automatically generated “Source code” archives do not include the bundled upstream archive.

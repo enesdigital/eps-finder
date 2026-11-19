@@ -9,6 +9,7 @@ import subprocess
 import tempfile
 import xml.etree.ElementTree as ET
 import zipfile
+from localization import LANGUAGES, load_catalogs, verify_resources, write_installer
 
 ROOT = pathlib.Path(__file__).resolve().parent
 ARCHITECTURES = ("arm64", "x86_64")
@@ -16,6 +17,7 @@ IDENTIFIER = "local.epsfinder.pkg"
 
 
 def package(app, output, archive):
+    catalogs = load_catalogs(ROOT)
     app_info = plistlib.loads((app / "Contents/Info.plist").read_bytes())
     assert app_info["CFBundleIdentifier"] == "local.epsfinder", "Unexpected application"
     version = app_info["CFBundleShortVersionString"]
@@ -60,24 +62,15 @@ def package(app, output, archive):
         ET.SubElement(document, "title").text = "EPS Finder"
         ET.SubElement(document, "domains", enable_anywhere="false", enable_currentUserHome="false",
                       enable_localSystem="true")
+        document.find("choice[@id='default']").set("title", "installer.component.title")
+        ET.SubElement(document, "welcome", file="Welcome.html")
         ET.SubElement(document, "readme", file="ReadMe.html")
+        ET.SubElement(document, "conclusion", file="Conclusion.html")
         tree.write(distribution, encoding="utf-8", xml_declaration=True)
         resources = work / "resources"
         resources.mkdir()
-        (resources / "ReadMe.html").write_text(
-            '<!doctype html><html lang="tr"><meta charset="utf-8"><body>'
-            '<h1>EPS Finder</h1><p>Intel ve Apple Silicon · macOS 13 veya sonrası</p>'
-            '<p>Finder’da EPS küçük resimleri ve boşluk tuşuyla önizleme.</p>'
-            '<p>Kurulum konumu: <b>/Applications/EPS Finder.app</b>. '
-            'Ghostscript uygulamaya dahildir; ayrıca bir araç kurmanız gerekmez.</p>'
-            '<p>Kurulumdan sonra EPS Finder uygulamasını açıp “Örnek dosyayı göster” '
-            'düğmesiyle deneyebilirsiniz. Gerekirse Sistem Ayarları’ndan EPS Finder '
-            'Hızlı Bakış uzantılarını etkinleştirin.</p>'
-            '<p>Bu paket Developer ID imzası ve Apple notarizasyonu içermez. '
-            'macOS kuruluma izin vermek için kullanıcı onayı isteyebilir.</p>'
-            '<p>Dosyalar yerel işlenir. Kaynak EPS değiştirilmez. '
-            'Ghostscript ve bu uygulama AGPLv3 kapsamındadır; kaynak arşivi paketle birlikte sağlanır.</p>'
-            '</body></html>', encoding="utf-8")
+        write_installer(resources, catalogs)
+        verify_resources(app, resources, catalogs)
         subprocess.run(["productbuild", "--distribution", str(distribution), "--resources", str(resources),
                         "--package-path", str(work), str(installer)], check=True)
         expanded = work / "expanded"
@@ -85,6 +78,7 @@ def package(app, output, archive):
         installed = list(expanded.glob("*/Payload/Applications/EPS Finder.app"))
         assert len(installed) == 1, "Installer must contain exactly one app at /Applications"
         payload = installed[0]
+        verify_resources(payload, expanded / "Resources", catalogs)
         subprocess.run(["codesign", "--verify", "--deep", "--strict", str(payload)], check=True)
         binaries = [payload / "Contents/MacOS/EPSFinder",
                     *payload.glob("Contents/PlugIns/*.appex/Contents/MacOS/*"),
@@ -107,6 +101,9 @@ def package(app, output, archive):
                 file.write(source, prefix + "-source/" + source.name)
         for relative in ("installer/postinstall", "tests/EPS-Test.eps"):
             file.write(ROOT / relative, prefix + "-source/" + relative)
+        for language in LANGUAGES:
+            relative = "localizations/" + language + ".json"
+            file.write(ROOT / relative, prefix + "-source/" + relative)
         file.write(archive, prefix + "-source/vendor/ghostscript-10.08.0.tar.gz",
                    compress_type=zipfile.ZIP_STORED)
     with zipfile.ZipFile(sources) as file:
@@ -114,7 +111,7 @@ def package(app, output, archive):
     sums = output / (prefix + "-SHA256SUMS.txt")
     sums.write_text("".join(hashlib.sha256(path.read_bytes()).hexdigest() + "  " + path.name + "\n"
                             for path in (installer, sources)))
-    print("PASS: installer payload, signatures, both architectures, scripts, OS requirement, source archive")
+    print("PASS: installer payload, signatures, both architectures, five-language app/installer resources, scripts, OS requirement, source archive")
     print(installer)
     print(sources)
 

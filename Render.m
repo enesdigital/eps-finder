@@ -6,7 +6,7 @@
 
 static NSError *EPSFailure(NSString *message) {
     return [NSError errorWithDomain:@"local.epsfinder" code:1
-                          userInfo:@{NSLocalizedDescriptionKey: message}];
+                          userInfo:@{NSLocalizedDescriptionKey: NSLocalizedString(message, nil)}];
 }
 
 static double EPSNow(void) {
@@ -26,14 +26,14 @@ static int EPSDiscard(void *handle, const char *buffer, int length) { return len
 
 NSData *EPSRenderPDF(NSURL *input, NSTimeInterval timeout, NSError **error) {
     if (!input.isFileURL || timeout <= 0) {
-        if (error) *error = EPSFailure(@"Yerel bir EPS dosyası seçin.");
+        if (error) *error = EPSFailure(@"error.invalidInput");
         return nil;
     }
     NSDictionary *values = [input resourceValuesForKeys:@[NSURLIsRegularFileKey, NSURLFileSizeKey] error:error];
     if (!values) return nil;
     // shortcut: 256 MB input and 64 MB PDF limits keep Finder responsive; raise only after profiling large artwork.
     if (![values[NSURLIsRegularFileKey] boolValue] || [values[NSURLFileSizeKey] unsignedLongLongValue] > 256ULL * 1024 * 1024) {
-        if (error) *error = EPSFailure(@"Önizleme için dosyanın 256 MB veya daha küçük olması gerekiyor.");
+        if (error) *error = EPSFailure(@"error.inputTooLarge");
         return nil;
     }
     NSFileManager *fm = NSFileManager.defaultManager;
@@ -67,22 +67,22 @@ NSData *EPSRenderPDF(NSURL *input, NSTimeInterval timeout, NSError **error) {
         BOOL postscript = header.length >= 2 && bytes[0] == '%' && bytes[1] == '!';
         BOOL binaryEPS = header.length == 4 && bytes[0] == 0xc5 && bytes[1] == 0xd0 && bytes[2] == 0xd3 && bytes[3] == 0xc6;
         if (!postscript && !binaryEPS) {
-            if (error) *error = EPSFailure(@"Dosyanın EPS/PostScript başlığı geçersiz.");
+            if (error) *error = EPSFailure(@"error.invalidHeader");
             return nil;
         }
         if (dispatch_semaphore_wait(engineLock, dispatch_time(DISPATCH_TIME_NOW, (int64_t)(timeout * NSEC_PER_SEC)))) {
-            if (error) *error = EPSFailure(@"EPS önizleme motoru meşgul.");
+            if (error) *error = EPSFailure(@"error.busy");
             return nil;
         }
         engineLocked = YES;
         if (gsapi_new_instance(&instance, &deadline) < 0) {
-            if (error) *error = EPSFailure(@"EPS önizleme motoru başlatılamadı.");
+            if (error) *error = EPSFailure(@"error.startFailed");
             return nil;
         }
         if (gsapi_set_arg_encoding(instance, GS_ARG_ENCODING_UTF8) < 0 ||
             gsapi_set_stdio(instance, EPSRead, EPSDiscard, EPSDiscard) < 0 ||
             gsapi_set_poll(instance, EPSPoll) < 0) {
-            if (error) *error = EPSFailure(@"EPS önizleme motoru yapılandırılamadı.");
+            if (error) *error = EPSFailure(@"error.setupFailed");
             return nil;
         }
         NSArray<NSString *> *arguments = @[@"gs", @"-q", @"-P-", @"-dSAFER", @"-dBATCH", @"-dNOPAUSE", @"-dEPSCrop",
@@ -97,17 +97,17 @@ NSData *EPSRenderPDF(NSURL *input, NSTimeInterval timeout, NSError **error) {
         int exitStatus = gsapi_exit(instance);
         initialized = NO;
         if (deadline.cancelled) {
-            if (error) *error = EPSFailure(@"EPS önizlemesi zaman sınırını aştı.");
+            if (error) *error = EPSFailure(@"error.timeout");
             return nil;
         }
         if ((status != 0 && status != gs_error_Quit) || exitStatus != 0) {
-            if (error) *error = EPSFailure(@"EPS işlenemedi. Dosya bozuk olabilir veya harici bir kaynağa ihtiyaç duyabilir.");
+            if (error) *error = EPSFailure(@"error.renderFailed");
             return nil;
         }
         NSDictionary *attributes = [fm attributesOfItemAtPath:output.path error:error];
         if (!attributes) return nil;
         if ([attributes fileSize] > 64ULL * 1024 * 1024) {
-            if (error) *error = EPSFailure(@"Üretilen önizleme çok büyük.");
+            if (error) *error = EPSFailure(@"error.outputTooLarge");
             return nil;
         }
         NSData *pdf = [NSData dataWithContentsOfURL:output options:0 error:error];
@@ -122,7 +122,7 @@ NSData *EPSRenderPDF(NSURL *input, NSTimeInterval timeout, NSError **error) {
             && bounds.size.width <= 100000 && bounds.size.height <= 100000;
         if (document) CGPDFDocumentRelease(document);
         if (!valid) {
-            if (error) *error = EPSFailure(@"Geçerli bir önizleme sayfası üretilemedi.");
+            if (error) *error = EPSFailure(@"error.invalidPage");
             return nil;
         }
         return pdf;

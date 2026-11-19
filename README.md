@@ -6,9 +6,11 @@ Finder’da EPS küçük resimleri ve boşluk tuşuyla Hızlı Bakış önizleme
 
 **Universal 2:** Intel (`x86_64`) ve Apple Silicon (`arm64`). **macOS 13 veya sonrası.** Ghostscript uygulamaya dahildir; kurulan Mac’te Homebrew, Python, Illustrator veya Rosetta gerekmez.
 
+Uygulama arayüzü, hata mesajları ve kurulum sayfaları Türkçe, İngilizce, Almanca, Fransızca ve İspanyolca sunulur. macOS dil tercihlerinize göre otomatik seçim yapar; desteklenen bir dil bulunamazsa İngilizce kullanılır.
+
 ## Kurulum
 
-1. [Releases sayfasından](https://github.com/enesdigital/eps-finder/releases/latest) `EPS-Finder-1.1.0-universal-unsigned.pkg` dosyasını indirin. Intel ve Apple Silicon için aynı paket kullanılır.
+1. [Releases sayfasından](https://github.com/enesdigital/eps-finder/releases/latest) `EPS-Finder-1.2.0-universal-unsigned.pkg` dosyasını indirin. Intel ve Apple Silicon için aynı paket kullanılır.
 2. `.pkg` dosyasını açıp kurulum adımlarını izleyin. Uygulama `/Applications/EPS Finder.app` konumuna kurulur; yönetici onayı gerekir.
 3. Uygulamayı bir kez açın. **Örnek dosyayı göster** düğmesi, paketteki örnek EPS’yi Finder’da seçer.
 
@@ -23,7 +25,7 @@ Bu sürüm **Developer ID ile imzalanmamıştır ve Apple notarizasyonu içermez
 ## Önizleme görünmüyorsa
 
 1. Dosyanın yalnızca bulutta duran bir yer tutucu olmadığını, Mac’e indirildiğini kontrol edin.
-2. EPS Finder’ı bir kez açın ve Sistem Ayarları’nda **Uzantılar / Hızlı Bakış** araması yapıp **EPS Finder — Preview** ve **EPS Finder — Thumbnail** uzantılarını etkinleştirin. Ayarın konumu macOS sürümüne göre değişebilir.
+2. EPS Finder’ı bir kez açın ve Sistem Ayarları’nda **Uzantılar / Hızlı Bakış** araması yapıp **EPS Finder — Önizleme** ve **EPS Finder — Küçük resimler** uzantılarını etkinleştirin. Ayarın konumu macOS sürümüne göre değişebilir.
 3. Küçük resimler için Finder’ın simge önizlemesi seçeneğini kontrol edin. Bozuk veya harici kaynak gerektiren EPS’ler görüntülenemeyebilir.
 
 ## İşleyiş ve sınırlar
@@ -63,6 +65,8 @@ Kaynak ZIP’inden derlerken `--source-archive vendor/ghostscript-10.08.0.tar.gz
 
 ## Doğrulama
 
+Derleme ayrıca beş dilde gerçek macOS kaynak seçimini, uygulama ve uzantı adlarını, hata mesajlarını, bölgesel dil kodlarını, tercih sırasını ve İngilizceye dönüşü her iki mimaride test eder. Çeviriler `localizations/*.json` dosyalarındadır; derleme standart `.lproj` kaynaklarını üretir.
+
 `build.py`, hem arm64 hem x86_64 kodunu çalıştırarak ASCII ve DOS binary EPS, çizim alanına kırpma, Türkçe/yüzde işaretli dosya yolları, kaynak bütünlüğü, geçersiz dosya, ilgisiz dosya okumasının engellenmesi, zaman aşımı ve sonrasında toparlanmayı sınar. Bu Mac’te Intel kodu Rosetta altında çalıştırılır; fiziksel Intel Mac testi ayrıca yapılmalıdır.
 
 Kurulumdan sonra gerçek Quick Look servisi ile Retina küçük resim testi:
@@ -77,6 +81,6 @@ Bu görsel kontrol paketteki koyu zeminli örneğin doğru boyutta ve ortalanmı
 
 AGPL-3.0-or-later; tam metin [LICENSE](LICENSE) dosyasında. Ghostscript ve derleme uyarlaması [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) içinde açıklanır. İkili paketle birlikte oluşturulan kaynak ZIP’i de paylaşın.
 
-[Releases](https://github.com/enesdigital/eps-finder/releases/latest) bölümünde kurulum paketi, tam Ghostscript kaynaklarını içeren kaynak ZIP’i ve `SHA256SUMS` dosyası bulunur. ZIP adı `EPS-Finder-1.1.0-source.zip` şeklindedir; GitHub’ın otomatik oluşturduğu “Source code” arşivinden farklı olarak Ghostscript kaynak arşivini de içerir.
+[Releases](https://github.com/enesdigital/eps-finder/releases/latest) bölümünde kurulum paketi, tam Ghostscript kaynaklarını içeren kaynak ZIP’i ve `SHA256SUMS` dosyası bulunur. ZIP adı `EPS-Finder-1.2.0-source.zip` şeklindedir; GitHub’ın otomatik oluşturduğu “Source code” arşivinden farklı olarak Ghostscript kaynak arşivini de içerir.
 
 Apple belgeleri: [Universal macOS binary](https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary), [Quick Look UI](https://developer.apple.com/documentation/quicklookui), [notarizasyon](https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution).

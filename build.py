@@ -6,8 +6,10 @@ import plistlib
 import shutil
 import subprocess
 import sys
+from localization import LANGUAGES, load_catalogs, write_bundle
 
 source = pathlib.Path(__file__).resolve().parent
+catalogs = load_catalogs(source)
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("output", nargs="?", type=pathlib.Path, default=source / "build/app")
 parser.add_argument("engine", nargs="?", type=pathlib.Path, default=source / "build/engine")
@@ -40,9 +42,10 @@ def info(identifier, executable, kind):
         "CFBundleDisplayName": "EPS Finder",
         "CFBundlePackageType": kind,
         "CFBundleInfoDictionaryVersion": "6.0",
-        "CFBundleShortVersionString": "1.1.0",
-        "CFBundleVersion": "4",
-        "CFBundleDevelopmentRegion": "tr",
+        "CFBundleShortVersionString": "1.2.0",
+        "CFBundleVersion": "5",
+        "CFBundleDevelopmentRegion": "en",
+        "CFBundleLocalizations": list(LANGUAGES),
         "LSMinimumSystemVersion": "13.0",
     }
 
@@ -71,6 +74,7 @@ compile_file("App.m", contents / "MacOS/EPSFinder", ["AppKit"])
 
 resources = contents / "Resources"
 resources.mkdir(parents=True, exist_ok=True)
+write_bundle(contents, catalogs)
 shutil.copyfile(license_file, resources / "Ghostscript-COPYING.txt")
 shutil.copyfile(source / "tests/EPS-Test.eps", resources / "EPS-Test.eps")
 (resources / "Ghostscript.txt").write_text(
@@ -85,7 +89,8 @@ for name, point, principal, filename in [
 ]:
     extension = contents / "PlugIns" / (name + ".appex")
     extension_info = info("local.epsfinder." + name.lower(), name, "XPC!")
-    extension_info["CFBundleDisplayName"] = "EPS Finder — " + name
+    display_key = "extension." + name.lower() + ".name"
+    extension_info["CFBundleDisplayName"] = catalogs["en"][display_key]
     attributes = {"QLSupportedContentTypes": ["com.adobe.encapsulated-postscript"]}
     if name == "Preview":
         attributes["QLIsDataBasedPreview"] = True
@@ -97,6 +102,7 @@ for name, point, principal, filename in [
         "NSExtensionAttributes": attributes,
     }
     write_plist(extension / "Contents/Info.plist", extension_info)
+    write_bundle(extension / "Contents", catalogs, display_key)
     compile_file(filename, extension / "Contents/MacOS" / name,
                  ["AppKit", "QuickLookUI", "QuickLookThumbnailing", "PDFKit", "UniformTypeIdentifiers"], True)
     bundled_library = extension / "Contents/Frameworks/libgs.dylib"
@@ -117,4 +123,19 @@ for architecture in ("arm64", "x86_64"):
     subprocess.run(["arch", "-" + architecture, str(destination / "render-self-check")], check=True, timeout=40)
 compile_file("CheckFinder.m", destination / "check-finder",
              ["Foundation", "QuickLookThumbnailing", "ImageIO", "UniformTypeIdentifiers", "CoreGraphics"])
+test_contents = destination / "LocalizationTests.app/Contents"
+write_plist(test_contents / "Info.plist", info("local.epsfinder.localization-tests", "LocalizationTests", "APPL"))
+write_bundle(test_contents, catalogs)
+test_binary = test_contents / "MacOS/LocalizationTests"
+compile_file("LocalizationTest.m", test_binary, ["Foundation", "CoreGraphics"], True, str(prepared_library.parent))
+cases = [(language, [language]) for language in LANGUAGES]
+cases += [("tr", ["tr-TR"]), ("en", ["en-GB"]), ("de", ["de-CH"]), ("fr", ["fr-CA"]),
+          ("es", ["es-MX"]), ("en", ["ja"]), ("de", ["ja", "de-DE"])]
+for architecture in ("arm64", "x86_64"):
+    for language, preferences in cases:
+        apple_languages = "(" + ",".join('"' + value + '"' for value in preferences) + ")"
+        subprocess.run(["arch", "-" + architecture, str(test_binary), language,
+                        catalogs[language]["app.showSample"], catalogs[language]["error.invalidInput"],
+                        str(app), "-AppleLanguages", apple_languages], check=True, timeout=10)
+print("PASS: five languages, regional variants, ordered preferences and English fallback on both architectures")
 print(app)

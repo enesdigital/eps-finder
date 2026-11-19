@@ -6,11 +6,13 @@ Miniatures EPS et aperçus Coup d’œil avec la barre d’espace dans le Finder
 
 **Universal 2 :** Intel (`x86_64`) et Apple Silicon (`arm64`). **macOS 13 ou version ultérieure.** Ghostscript est inclus. L’utilisation de l’application ne nécessite ni Homebrew, ni Python, ni Illustrator, ni Rosetta.
 
+L’interface, les messages d’erreur et les pages d’installation sont disponibles en turc, anglais, allemand, français et espagnol. macOS choisit automatiquement la langue adaptée à vos préférences ; l’anglais est utilisé si aucune langue prise en charge ne correspond.
+
 ## Installation
 
-1. Téléchargez `EPS-Finder-1.1.0-universal-unsigned.pkg` depuis la page [Releases](https://github.com/enesdigital/eps-finder/releases/latest). Le même paquet convient aux Mac Intel et Apple Silicon.
+1. Téléchargez `EPS-Finder-1.2.0-universal-unsigned.pkg` depuis la page [Releases](https://github.com/enesdigital/eps-finder/releases/latest). Le même paquet convient aux Mac Intel et Apple Silicon.
 2. Ouvrez le fichier `.pkg` et suivez l’assistant. L’application est installée dans `/Applications/EPS Finder.app` ; une autorisation d’administrateur est nécessaire.
-3. Ouvrez EPS Finder une fois. Cliquez sur **Örnek dosyayı göster** (« Afficher le fichier d’exemple ») pour sélectionner l’exemple EPS fourni dans le Finder. La boîte de dialogue de l’application est actuellement en turc.
+3. Ouvrez EPS Finder une fois. Cliquez sur **Afficher le fichier d’exemple** pour sélectionner l’exemple EPS fourni dans le Finder.
 
 Le programme d’installation enregistre les extensions Coup d’œil pour l’utilisateur connecté. Les autres comptes peuvent également devoir ouvrir l’application une première fois.
 
@@ -23,7 +25,7 @@ Sélectionnez un fichier `.eps` dans le Finder et appuyez sur la **barre d’esp
 ## Si aucun aperçu ne s’affiche
 
 1. Vérifiez que le fichier est téléchargé sur le Mac et qu’il ne s’agit pas seulement d’un élément disponible dans le cloud.
-2. Ouvrez EPS Finder une fois. Recherchez **Extensions / Coup d’œil (Quick Look)** dans les Réglages Système, puis activez **EPS Finder — Preview** et **EPS Finder — Thumbnail**. L’emplacement exact varie selon la version de macOS.
+2. Ouvrez EPS Finder une fois. Recherchez **Extensions / Coup d’œil (Quick Look)** dans les Réglages Système, puis activez **EPS Finder — Aperçu** et **EPS Finder — Miniatures**. L’emplacement exact varie selon la version de macOS.
 3. Vérifiez l’option d’aperçu des icônes dans le Finder. Les fichiers EPS endommagés ou nécessitant des ressources externes peuvent ne pas s’afficher.
 
 ## Traitement et limites
@@ -55,4 +57,4 @@ Les tests arm64 et x86_64 ont réussi ; le code Intel a été exécuté avec Ros
 
 AGPL-3.0-or-later ; voir [LICENSE](LICENSE) et [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Distribuez l’archive des sources générée avec le paquet binaire.
 
-La page [Releases](https://github.com/enesdigital/eps-finder/releases/latest) propose le programme d’installation, `EPS-Finder-1.1.0-source.zip` et un fichier `SHA256SUMS`. L’archive des sources portant ce nom contient également les sources complètes de Ghostscript. Les archives « Source code » générées automatiquement par GitHub ne contiennent pas cette archive supplémentaire.
+La page [Releases](https://github.com/enesdigital/eps-finder/releases/latest) propose le programme d’installation, `EPS-Finder-1.2.0-source.zip` et un fichier `SHA256SUMS`. L’archive des sources portant ce nom contient également les sources complètes de Ghostscript. Les archives « Source code » générées automatiquement par GitHub ne contiennent pas cette archive supplémentaire.
