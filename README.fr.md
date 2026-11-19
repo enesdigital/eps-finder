@@ -8,11 +8,11 @@ Miniatures EPS et aperçus Coup d’œil avec la barre d’espace dans le Finder
 
 L’interface, les messages d’erreur et les pages d’installation sont disponibles en turc, anglais, allemand, français et espagnol. macOS choisit automatiquement la langue adaptée à vos préférences ; l’anglais est utilisé si aucune langue prise en charge ne correspond.
 
-La version 1.3.1 ajoute la nouvelle icône EPS, reconnaît les anciennes copies numérotées `1.0` et relance le service de miniatures après une mise à jour pour que le Finder n’utilise plus un ancien chemin d’extension. [La source de l’icône et son prompt](assets/ICON.md) sont inclus.
+La version 1.4.0 ajoute les mises à jour vérifiées dans l’application avec Sparkle. [EPS icon](assets/ICON.md).
 
 ## Installation
 
-1. Téléchargez `EPS-Finder-1.3.1-universal-unsigned.pkg` depuis la page [Releases](https://github.com/enesdigital/eps-finder/releases/latest). Le même paquet convient aux Mac Intel et Apple Silicon.
+1. Téléchargez `EPS-Finder-1.4.0-universal-unsigned.pkg` depuis la page [Releases](https://github.com/enesdigital/eps-finder/releases/latest). Le même paquet convient aux Mac Intel et Apple Silicon.
 2. Ouvrez le fichier `.pkg` et suivez l’assistant. L’application est installée dans `/Applications/EPS Finder.app` ; une autorisation d’administrateur est nécessaire.
 3. Ouvrez EPS Finder une fois. Cliquez sur **Afficher le fichier d’exemple** pour sélectionner l’exemple EPS fourni dans le Finder.
 
@@ -26,15 +26,17 @@ Sélectionnez un fichier `.eps` dans le Finder et appuyez sur la **barre d’esp
 
 ## Mises à jour
 
-EPS Finder recherche une nouvelle version stable sur GitHub à chaque ouverture. Vous pouvez désactiver **Rechercher automatiquement les mises à jour à l’ouverture d’EPS Finder** ou utiliser **Rechercher les mises à jour**.
+EPS Finder utilise Sparkle 2.10.1 pour télécharger, vérifier et installer les mises à jour dans l’application. Choisissez **Rechercher des mises à jour**, **Installer la mise à jour**, puis **Installer et relancer**. macOS peut demander une autorisation administrateur ; EPS Finder redémarre automatiquement ensuite. Il n’est plus nécessaire d’ouvrir le paquet téléchargé. **Notes de version** ouvre GitHub pour un téléchargement manuel.
 
-Lorsqu’une mise à jour est disponible, cliquez sur **Télécharger et installer…**. L’application télécharge le paquet universel de ce dépôt, vérifie sa taille et la somme SHA-256 fournie par GitHub, puis ouvre le programme d’installation de macOS. EPS Finder se ferme à l’ouverture du programme d’installation pour arrêter l’ancien processus. Terminez avec une autorisation d’administrateur et rouvrez EPS Finder. **Notes de version** ouvre la page pour un téléchargement manuel.
+Le flux de mises à jour et le paquet doivent porter des signatures Ed25519 valides correspondant à la clé publique intégrée. Les mises à jour modifiées ou mal signées sont rejetées. La clé privée de publication reste dans le trousseau macOS. Ces signatures sont distinctes de la signature Apple Developer ID : le paquet de première installation reste non signé et non notarié.
 
-Les versions 1.2.0 et antérieures n’ont pas cette fonction : installez d’abord la version 1.3.1 depuis Releases. Après l’installation, EPS Finder est enregistré comme élément d’ouverture de session et recherche les mises à jour à chaque connexion. Vous pouvez désactiver **Ouvrir EPS Finder à l’ouverture de session** ou utiliser Réglages Système → Général → Ouverture de session. Un réglage désactivé dans macOS est respecté. Aucun service distinct en arrière-plan n’est installé. Seule l’application contacte GitHub et ses serveurs de téléchargement. Les fichiers EPS ne sont jamais envoyés et les extensions Coup d’œil n’ont pas d’autorisation réseau.
+**Depuis la version 1.3.1 ou antérieure :** installez une fois la version 1.4.0 depuis Releases. L’ancien programme de mise à jour ne peut pas être réparé à distance. Les mises à jour suivantes utilisent la nouvelle installation intégrée.
 
-Le paquet reste non signé et non notarié. SHA-256 vérifie l’intégrité du téléchargement et ne remplace ni une signature Developer ID ni une autorisation de sécurité de macOS. Les téléchargements incomplets ou incorrects sont supprimés. En cas d’erreur réseau ou de limite de requêtes GitHub, réessayez plus tard.
+La recherche automatique se lance à chaque ouverture et régulièrement tant que l’application reste ouverte. Désactivez **Rechercher automatiquement les mises à jour** pour l’arrêter ; la recherche manuelle reste disponible. L’application est enregistrée pour démarrer à l’ouverture de session. Vous pouvez modifier ce choix dans EPS Finder ou Réglages Système → Général → Ouverture de session. Les préférences existantes sont conservées.
 
-L’installation manuelle et la mise à jour remplacent `/Applications/EPS Finder.app`. Les anciennes copies ayant le même identifiant dans `/Applications` et dans `~/Applications` de l’utilisateur connecté sont placées dans la Corbeille. Les copies des autres utilisateurs sont vérifiées à la prochaine ouverture de la nouvelle application. Les versions identiques ou plus récentes, les autres applications, les liens symboliques et les documents EPS sont conservés. Les autres dossiers ne sont pas analysés. Si une copie ne peut pas être déplacée, l’application demande un nettoyage manuel.
+Seule l’application contacte GitHub et ses serveurs de téléchargement. Les fichiers EPS ne sont jamais envoyés ; les extensions Coup d’œil n’ont pas d’autorisation réseau. Aucun assistant privilégié permanent n’est installé. Sparkle demande une autorisation administrateur pendant l’installation.
+
+L’installation remplace `/Applications/EPS Finder.app`. Les anciennes copies portant le même identifiant dans `/Applications` et `~/Applications` de l’utilisateur connecté sont placées dans la Corbeille. Les versions identiques ou plus récentes, autres applications, liens symboliques et fichiers EPS sont conservés. Les autres emplacements ne sont pas parcourus. En cas d’échec, l’application demande une suppression manuelle.
 
 ## Si aucun aperçu ne s’affiche
 
@@ -71,4 +73,6 @@ Les tests arm64 et x86_64 ont réussi ; le code Intel a été exécuté avec Ros
 
 AGPL-3.0-or-later ; voir [LICENSE](LICENSE) et [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md). Distribuez l’archive des sources générée avec le paquet binaire.
 
-La page [Releases](https://github.com/enesdigital/eps-finder/releases/latest) propose le programme d’installation, `EPS-Finder-1.3.1-source.zip` et un fichier `SHA256SUMS`. L’archive des sources portant ce nom contient également les sources complètes de Ghostscript. Les archives « Source code » générées automatiquement par GitHub ne contiennent pas cette archive supplémentaire.
+La page [Releases](https://github.com/enesdigital/eps-finder/releases/latest) propose le programme d’installation, `EPS-Finder-1.4.0-source.zip` et un fichier `SHA256SUMS`. L’archive des sources portant ce nom contient également les sources complètes de Ghostscript et de Sparkle. Les archives « Source code » générées automatiquement par GitHub ne contiennent pas cette archive supplémentaire.
+
+[Sparkle 2.10.1 · MIT · Ed25519 · appcast.xml](README.md#updates)

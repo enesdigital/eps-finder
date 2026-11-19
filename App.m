@@ -1,5 +1,5 @@
 #import <AppKit/AppKit.h>
-#import "Update.h"
+#import <Sparkle/Sparkle.h>
 #import "Maintenance.h"
 #import <ServiceManagement/ServiceManagement.h>
 
@@ -7,11 +7,7 @@
 @property(strong) NSWindow *window;
 @property(strong) NSTextField *status;
 @property(strong) NSButton *checkButton;
-@property(strong) NSButton *installButton;
-@property(strong) NSProgressIndicator *progress;
-@property(strong) EPSUpdater *updater;
-@property(strong) EPSUpdate *update;
-@property(strong) NSURL *package;
+@property(strong) SPUStandardUpdaterController *updaterController;
 @property(strong) NSButton *loginButton;
 @property(strong) NSTextField *loginStatus;
 @property BOOL loginFailed;
@@ -24,8 +20,13 @@
     return [NSButton buttonWithTitle:NSLocalizedString(key, nil) target:self action:action];
 }
 - (void)applicationDidFinishLaunching:(NSNotification *)notification {
-    [NSUserDefaults.standardUserDefaults registerDefaults:@{@"AutomaticallyCheckForUpdates": @YES}];
-    self.updater = [EPSUpdater new];
+    self.updaterController = [[SPUStandardUpdaterController alloc] initWithStartingUpdater:NO updaterDelegate:nil userDriverDelegate:nil];
+    NSUserDefaults *defaults = NSUserDefaults.standardUserDefaults;
+    NSNumber *previous = [defaults objectForKey:@"AutomaticallyCheckForUpdates"];
+    if (previous) {
+        if (![defaults objectForKey:@"SUEnableAutomaticChecks"]) self.updaterController.updater.automaticallyChecksForUpdates = previous.boolValue;
+        [defaults removeObjectForKey:@"AutomaticallyCheckForUpdates"];
+    }
     NSMenu *menu = [NSMenu new];
     NSMenuItem *appMenu = [NSMenuItem new];
     appMenu.submenu = [NSMenu new];
@@ -41,14 +42,10 @@
     title.font = [NSFont boldSystemFontOfSize:22];
     NSTextField *instructions = [NSTextField wrappingLabelWithString:NSLocalizedString(@"app.instructions", nil)];
     NSButton *sample = [self button:@"app.showSample" action:@selector(showSample:)];
-    NSButton *automatic = [NSButton checkboxWithTitle:NSLocalizedString(@"update.automatic", nil) target:self action:@selector(toggleAutomatic:)];
-    automatic.state = [NSUserDefaults.standardUserDefaults boolForKey:@"AutomaticallyCheckForUpdates"] ? NSControlStateValueOn : NSControlStateValueOff;
+    NSButton *automatic = [NSButton checkboxWithTitle:NSLocalizedString(@"update.automatic", nil) target:nil action:NULL];
+    [automatic bind:NSValueBinding toObject:self.updaterController.updater withKeyPath:@"automaticallyChecksForUpdates" options:nil];
     self.status = [NSTextField wrappingLabelWithString:NSLocalizedString(@"update.idle", nil)];
     self.status.accessibilityLabel = NSLocalizedString(@"update.status", nil);
-    self.progress = [NSProgressIndicator new];
-    self.progress.style = NSProgressIndicatorStyleBar;
-    self.progress.maxValue = 1;
-    self.progress.hidden = YES;
     self.loginButton = [NSButton checkboxWithTitle:NSLocalizedString(@"startup.automatic", nil) target:self action:@selector(toggleLogin:)];
     NSButton *loginSettings = [self button:@"startup.settings" action:@selector(showLoginSettings:)];
     NSStackView *loginRow = [NSStackView stackViewWithViews:@[self.loginButton, loginSettings]];
@@ -63,15 +60,14 @@
         self.cleanupFailed = !EPSRetireOlderCopies(NSBundle.mainBundle.bundleURL, nil);
     }
     [self refreshLoginStatus];
-    self.checkButton = [self button:@"update.check" action:@selector(checkUpdates:)];
-    self.installButton = [self button:@"update.install" action:@selector(installUpdate:)];
-    self.installButton.enabled = NO;
+    self.checkButton = [NSButton buttonWithTitle:NSLocalizedString(@"update.check", nil) target:self.updaterController action:@selector(checkForUpdates:)];
+    [self.checkButton bind:NSEnabledBinding toObject:self.updaterController.updater withKeyPath:@"canCheckForUpdates" options:nil];
     NSButton *releases = [self button:@"update.releases" action:@selector(showReleases:)];
-    NSStackView *buttons = [NSStackView stackViewWithViews:@[self.checkButton, self.installButton, releases]];
+    NSStackView *buttons = [NSStackView stackViewWithViews:@[self.checkButton, releases]];
     buttons.spacing = 8;
     NSBox *separator = [NSBox new];
     separator.boxType = NSBoxSeparator;
-    NSStackView *stack = [NSStackView stackViewWithViews:@[title, instructions, sample, separator, loginRow, self.loginStatus, automatic, self.status, self.progress, buttons]];
+    NSStackView *stack = [NSStackView stackViewWithViews:@[title, instructions, sample, separator, loginRow, self.loginStatus, automatic, self.status, buttons]];
     stack.orientation = NSUserInterfaceLayoutOrientationVertical;
     stack.alignment = NSLayoutAttributeLeading;
     stack.spacing = 16;
@@ -86,14 +82,14 @@
         [self.status.widthAnchor constraintEqualToAnchor:stack.widthAnchor],
         [self.status.heightAnchor constraintGreaterThanOrEqualToConstant:54],
         [self.loginStatus.widthAnchor constraintEqualToAnchor:stack.widthAnchor],
-        [separator.widthAnchor constraintEqualToAnchor:stack.widthAnchor],
-        [self.progress.widthAnchor constraintEqualToAnchor:stack.widthAnchor]
+        [separator.widthAnchor constraintEqualToAnchor:stack.widthAnchor]
     ]];
     [self.window setContentSize:NSMakeSize(MAX(660, MAX(buttons.fittingSize.width, loginRow.fittingSize.width) + 48), 550)];
     [self.window center];
     [self.window makeKeyAndOrderFront:nil];
     [NSApp activateIgnoringOtherApps:YES];
-    if (automatic.state == NSControlStateValueOn) [self checkUpdates:nil];
+    [self.updaterController startUpdater];
+    if (self.updaterController.updater.automaticallyChecksForUpdates) [self.updaterController.updater checkForUpdatesInBackground];
 }
 - (void)refreshLoginStatus {
     SMAppServiceStatus state = SMAppService.mainAppService.status;
@@ -117,56 +113,9 @@
     if (sample) [NSWorkspace.sharedWorkspace activateFileViewerSelectingURLs:@[sample]];
 }
 - (void)showReleases:(id)sender {
-    [NSWorkspace.sharedWorkspace openURL:self.update.releaseURL ?: [NSURL URLWithString:@"https://github.com/enesdigital/eps-finder/releases/latest"]];
-}
-- (void)toggleAutomatic:(NSButton *)sender {
-    [NSUserDefaults.standardUserDefaults setBool:sender.state == NSControlStateValueOn forKey:@"AutomaticallyCheckForUpdates"];
-}
-- (void)setBusy:(BOOL)busy {
-    self.checkButton.enabled = !busy;
-    self.installButton.enabled = !busy && self.update != nil;
-    self.progress.hidden = !busy;
-    if (busy) {
-        self.progress.indeterminate = YES;
-        [self.progress startAnimation:nil];
-    } else [self.progress stopAnimation:nil];
-}
-- (void)checkUpdates:(id)sender {
-    self.update = nil;
-    self.package = nil;
-    self.installButton.title = NSLocalizedString(@"update.install", nil);
-    [self setBusy:YES];
-    self.status.stringValue = NSLocalizedString(@"update.checking", nil);
-    [self.updater checkFromVersion:self.version completion:^(EPSUpdate *update, NSError *error) {
-        self.update = update;
-        [self setBusy:NO];
-        if (error) self.status.stringValue = error.localizedDescription;
-        else self.status.stringValue = [NSString stringWithFormat:NSLocalizedString(update ? @"update.available" : @"update.current", nil), update ? update.version : self.version];
-    }];
-}
-- (void)openInstaller {
-    if ([NSWorkspace.sharedWorkspace openURL:self.package]) {
-        [NSApp terminate:nil];
-    } else self.status.stringValue = NSLocalizedString(@"update.openFailed", nil);
-}
-- (void)installUpdate:(id)sender {
-    if (self.package) { [self openInstaller]; return; }
-    [self setBusy:YES];
-    self.status.stringValue = NSLocalizedString(@"update.preparing", nil);
-    self.progress.indeterminate = NO;
-    self.progress.doubleValue = 0;
-    [self.updater download:self.update progress:^(double fraction) {
-        self.progress.doubleValue = fraction;
-        NSString *percentage = [NSNumberFormatter localizedStringFromNumber:@(fraction) numberStyle:NSNumberFormatterPercentStyle];
-        self.status.stringValue = [NSString stringWithFormat:NSLocalizedString(@"update.downloading", nil), percentage];
-    } completion:^(NSURL *package, NSError *error) {
-        [self setBusy:NO];
-        if (error) self.status.stringValue = [error.domain isEqual:@"local.epsfinder.update"] ? error.localizedDescription : NSLocalizedString(@"update.downloadFailed", nil);
-        else { self.package = package; [self openInstaller]; }
-    }];
+    [NSWorkspace.sharedWorkspace openURL:[NSURL URLWithString:@"https://github.com/enesdigital/eps-finder/releases/latest"]];
 }
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)sender { return YES; }
-- (void)applicationWillTerminate:(NSNotification *)notification { [self.updater cancel]; }
 @end
 
 int main(int argc, const char *argv[]) {

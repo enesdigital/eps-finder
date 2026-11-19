@@ -6,6 +6,7 @@ import plistlib
 import shutil
 import subprocess
 import sys
+from sparkle import prepare, PUBLIC_KEY, FEED_URL
 from localization import LANGUAGES, load_catalogs, write_bundle
 
 source = pathlib.Path(__file__).resolve().parent
@@ -13,7 +14,9 @@ catalogs = load_catalogs(source)
 parser = argparse.ArgumentParser(description=__doc__)
 parser.add_argument("output", nargs="?", type=pathlib.Path, default=source / "build/app")
 parser.add_argument("engine", nargs="?", type=pathlib.Path, default=source / "build/engine")
+parser.add_argument("--sparkle", type=pathlib.Path, default=source / "build/sparkle")
 args = parser.parse_args()
+sparkle = prepare(args.sparkle.resolve())
 destination = args.output.resolve()
 app = destination / "EPS Finder.app"
 contents = app / "Contents"
@@ -42,8 +45,8 @@ def info(identifier, executable, kind):
         "CFBundleDisplayName": "EPS Finder",
         "CFBundlePackageType": kind,
         "CFBundleInfoDictionaryVersion": "6.0",
-        "CFBundleShortVersionString": "1.3.1",
-        "CFBundleVersion": "7",
+        "CFBundleShortVersionString": "1.4.0",
+        "CFBundleVersion": "9",
         "CFBundleDevelopmentRegion": "en",
         "CFBundleLocalizations": list(LANGUAGES),
         "LSMinimumSystemVersion": "13.0",
@@ -58,6 +61,8 @@ def compile_file(filename, output, frameworks, common=False, rpath="@loader_path
     if common:
         command += [str(source / "Render.m"), "-I", str(headers / "psi"), "-I", str(headers / "base"),
                     str(prepared_library), "-Wl,-rpath," + rpath]
+    if "Sparkle" in frameworks:
+        command += ["-F", str(sparkle), "-Wl,-rpath,@loader_path/../Frameworks"]
     for framework in frameworks:
         command += ["-framework", framework]
     subprocess.run(command + ["-o", str(output)], check=True)
@@ -70,9 +75,22 @@ write_plist(entitlements / "extension.plist", sandbox)
 
 app_info = info("local.epsfinder", "EPSFinder", "APPL")
 app_info.update({"NSPrincipalClass": "NSApplication", "LSApplicationCategoryType": "public.app-category.graphics-design",
-                 "LSFileQuarantineEnabled": True, "CFBundleIconFile": "EPSFinder.icns"})
+                 "LSFileQuarantineEnabled": True, "CFBundleIconFile": "EPSFinder.icns",
+                 "SUFeedURL": FEED_URL, "SUPublicEDKey": PUBLIC_KEY,
+                 "SURequireSignedFeed": True, "SUVerifyUpdateBeforeExtraction": True,
+                 "SUSignedFeedFailureExpirationInterval": 0, "SUEnableAutomaticChecks": True,
+                 "SUAllowsAutomaticUpdates": False, "SUSendProfileInfo": False})
 write_plist(contents / "Info.plist", app_info)
-compile_file("App.m", contents / "MacOS/EPSFinder", ["AppKit", "CoreServices", "ServiceManagement"], extra=("Update.m", "Maintenance.m"))
+compile_file("App.m", contents / "MacOS/EPSFinder", ["AppKit", "ServiceManagement", "Sparkle"], extra=("Update.m", "Maintenance.m"))
+
+framework = contents / "Frameworks/Sparkle.framework"
+framework.parent.mkdir(parents=True, exist_ok=True)
+subprocess.run(["ditto", "--norsrc", str(sparkle / "Sparkle.framework"), str(framework)], check=True)
+for binary in ("Sparkle", "Autoupdate", "Updater.app/Contents/MacOS/Updater",
+               "XPCServices/Installer.xpc/Contents/MacOS/Installer", "XPCServices/Downloader.xpc/Contents/MacOS/Downloader"):
+    assert set(subprocess.check_output(["lipo", "-archs", str(framework / "Versions/B" / binary)], text=True).split()) == {"arm64", "x86_64"}
+for language in LANGUAGES:
+    assert (framework / "Resources" / (("Base" if language == "en" else language) + ".lproj")).is_dir(), "Missing Sparkle translation: " + language
 
 resources = contents / "Resources"
 resources.mkdir(parents=True, exist_ok=True)
@@ -86,6 +104,7 @@ for size in (16, 32, 128, 256, 512):
 subprocess.run(["iconutil", "-c", "icns", str(iconset), "-o", str(resources / "EPSFinder.icns")], check=True)
 write_bundle(contents, catalogs)
 shutil.copyfile(license_file, resources / "Ghostscript-COPYING.txt")
+shutil.copyfile(sparkle / "LICENSE", resources / "Sparkle-LICENSE.txt")
 shutil.copyfile(source / "tests/EPS-Test.eps", resources / "EPS-Test.eps")
 (resources / "Ghostscript.txt").write_text(
     "Ghostscript 10.08.0 by Artifex Software, Inc.; upstream gp_mspol.c enables polling on macOS.\n"

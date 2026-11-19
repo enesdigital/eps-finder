@@ -8,11 +8,11 @@ Finder’da EPS küçük resimleri ve boşluk tuşuyla Hızlı Bakış önizleme
 
 Uygulama arayüzü, hata mesajları ve kurulum sayfaları Türkçe, İngilizce, Almanca, Fransızca ve İspanyolca sunulur. macOS dil tercihlerinize göre otomatik seçim yapar; desteklenen bir dil bulunamazsa İngilizce kullanılır.
 
-1.3.1 sürümü yeni EPS simgesini içerir, temizlik sırasında eski `1.0` kopyalarını tanır ve güncellemeden sonra küçük resim hizmetini yenileyerek Finder’ın eski uzantı yolunu kullanmasını önler. [Simge kaynağı ve üretim istemi](assets/ICON.md) depoya dahildir.
+1.4.0 sürümü yeni EPS simgesini içerir, temizlik sırasında eski `1.0` kopyalarını tanır ve güncellemeden sonra küçük resim hizmetini yenileyerek Finder’ın eski uzantı yolunu kullanmasını önler. [Simge kaynağı ve üretim istemi](assets/ICON.md) depoya dahildir.
 
 ## Kurulum
 
-1. [Releases sayfasından](https://github.com/enesdigital/eps-finder/releases/latest) `EPS-Finder-1.3.1-universal-unsigned.pkg` dosyasını indirin. Intel ve Apple Silicon için aynı paket kullanılır.
+1. [Releases sayfasından](https://github.com/enesdigital/eps-finder/releases/latest) `EPS-Finder-1.4.0-universal-unsigned.pkg` dosyasını indirin. Intel ve Apple Silicon için aynı paket kullanılır.
 2. `.pkg` dosyasını açıp kurulum adımlarını izleyin. Uygulama `/Applications/EPS Finder.app` konumuna kurulur; yönetici onayı gerekir.
 3. Uygulamayı bir kez açın. **Örnek dosyayı göster** düğmesi, paketteki örnek EPS’yi Finder’da seçer.
 
@@ -26,15 +26,17 @@ Bu sürüm **Developer ID ile imzalanmamıştır ve Apple notarizasyonu içermez
 
 ## Güncellemeler
 
-EPS Finder her açıldığında GitHub’daki yeni kararlı sürümü kontrol eder. **EPS Finder açıldığında güncellemeleri otomatik kontrol et** seçeneğini kapatabilir veya uygulama açıkken **Güncellemeleri Kontrol Et** düğmesini kullanabilirsiniz.
+EPS Finder, Sparkle 2.10.1 ile güncellemeleri uygulama içinde indirir, doğrular ve kurar. **Güncellemeleri Kontrol Et**, **Güncellemeyi Yükle**, ardından **Yükle ve Yeniden Başlat** seçeneklerini kullanın. macOS yönetici onayı isteyebilir; kurulum bitince EPS Finder otomatik açılır. İndirilen paketi kendiniz açmanız gerekmez. **Sürüm Notları** GitHub’daki elle indirme sayfasını açar.
 
-Yeni sürüm varsa **İndir ve Kur…** düğmesine basın. Uygulama bu depodaki universal paketi indirir, boyutunu ve GitHub’ın sağladığı SHA-256 değerini doğrular, ardından macOS kurulum ekranını açar. Eski işlem çalışmaya devam etmesin diye kurulum ekranı açılınca EPS Finder kapanır. Yönetici onayıyla kurulumu tamamlayıp EPS Finder’ı yeniden açın. Elle indirmek için **Sürüm Notları** düğmesini kullanabilirsiniz.
+Güncelleme listesi ve paket, uygulamaya gömülü açık anahtarla eşleşen geçerli Ed25519 imzaları taşımalıdır. Değiştirilmiş veya imzası geçersiz güncellemeler reddedilir. Yayıncının özel anahtarı macOS Anahtar Zinciri’nde kalır. Bu imzalar Apple Developer ID imzasından ayrıdır: ilk kurulum paketi hâlâ imzasızdır ve notarizasyon içermez.
 
-1.2.0 ve önceki sürümlerde bu özellik yoktur; önce Releases sayfasından 1.3.1 sürümünü bir kez kurun. Kurulumdan sonra EPS Finder macOS giriş öğesi olarak kaydedilir; her oturum açılışında başlar ve güncellemeleri kontrol eder. **Oturum açıldığında EPS Finder’ı başlat** seçeneğini kapatabilir veya Sistem Ayarları → Genel → Giriş Öğeleri bölümünden yönetebilirsiniz. macOS’ta kapatılan ayara uyulur. Ayrı bir arka plan servisi kurulmaz. Yalnızca uygulama GitHub’a ve indirme sunucularına bağlanır. EPS dosyaları yüklenmez, Quick Look uzantıları ağ izni almaz.
+**1.3.1 veya öncesinden geçiş:** Releases sayfasından 1.4.0’ı bir kez indirip kurun. Eski güncelleyici uzaktan düzeltilemez. Sonraki güncellemeler yeni uygulama içi kurulumla tamamlanır.
 
-Paket imzasızdır ve Apple notarizasyonu içermez. SHA-256 indirme bütünlüğünü doğrular; Developer ID imzası veya macOS güvenlik onayı yerine geçmez. Eksik veya eşleşmeyen indirmeler silinir. Ağ hatası ya da GitHub istek sınırı durumunda daha sonra yeniden deneyebilirsiniz.
+Otomatik kontrol her açılışta ve uygulama açıkken belirli aralıklarla çalışır. Kapatmak için **Güncellemeleri otomatik kontrol et** seçeneğini kaldırın; elle kontrol kullanılabilir. Kurulum uygulamayı oturum açılışında başlayacak şekilde kaydeder. EPS Finder’dan veya Sistem Ayarları → Genel → Giriş Öğeleri bölümünden değiştirebilirsiniz. Mevcut tercihler korunur.
 
-Elle kurulumda ve uygulama içinden güncellemede `/Applications/EPS Finder.app` yenisiyle değiştirilir. `/Applications` ve oturumu açık kullanıcının `~/Applications` klasörlerindeki aynı uygulama kimliğine sahip eski sürümler Çöp’e taşınır. Diğer kullanıcılar yeni uygulamayı açtığında kendi eski kopyaları da kontrol edilir. Eşit/yeni sürümler, başka uygulamalar, sembolik bağlantılar ve EPS belgeleri korunur. Bu standart klasörler dışındaki kopyalar taranmaz. Taşınamayan bir kopya varsa uygulama elle temizlenmesi gerektiğini bildirir.
+Yalnızca uygulama GitHub’a ve indirme sunucularına bağlanır. EPS belgeleri yüklenmez; Quick Look uzantıları ağ izni almaz. Kalıcı bir ayrıcalıklı yardımcı kurulmaz; Sparkle güncelleme kurulurken yönetici yetkilendirmesi ister.
+
+Kurulum `/Applications/EPS Finder.app` kopyasını değiştirir. Aynı uygulama kimliğine sahip eski kopyalar `/Applications` ve oturumdaki kullanıcının `~/Applications` klasöründen Çöp Sepeti’ne taşınır. Eşit/yeni sürümler, başka uygulamalar, sembolik bağlantılar ve EPS dosyaları korunur. Diğer konumlar taranmaz. Temizlik başarısızsa uygulama eski kopyayı elle kaldırmanızı ister.
 
 ## Önizleme görünmüyorsa
 
@@ -79,22 +81,16 @@ Kaynak ZIP’inden derlerken `--source-archive vendor/ghostscript-10.08.0.tar.gz
 
 ## Doğrulama
 
-Derleme ayrıca beş dilde gerçek macOS kaynak seçimini, uygulama ve uzantı adlarını, hata mesajlarını, bölgesel dil kodlarını, tercih sırasını ve İngilizceye dönüşü her iki mimaride test eder. Çeviriler `localizations/*.json` dosyalarındadır; derleme standart `.lproj` kaynaklarını üretir.
+Derleme beş dili, bölgesel dil tercihlerini, İngilizceye dönüşü, renderer sınırlarını ve güvenli eski sürüm seçimini iki mimaride test eder. Paketleme, Sparkle yardımcılarının iki mimariyi içermesini ve güncelleme/paket imzalarını doğrular; değiştirilmiş kopyaların reddedildiğini de sınar. Intel kodu Rosetta ile çalıştırılır. Fiziksel Intel, macOS 13 ve gerçek yeniden başlatma testi yapılmamıştır.
 
-`build.py`, hem arm64 hem x86_64 kodunu çalıştırarak ASCII ve DOS binary EPS, çizim alanına kırpma, Türkçe/yüzde işaretli dosya yolları, kaynak bütünlüğü, geçersiz dosya, ilgisiz dosya okumasının engellenmesi, zaman aşımı ve sonrasında toparlanmayı sınar. Bu Mac’te Intel kodu Rosetta altında çalıştırılır; fiziksel Intel Mac testi ayrıca yapılmalıdır.
-
-Kurulumdan sonra gerçek Quick Look servisi ile Retina küçük resim testi:
-
-```sh
-build/app/check-finder "$PWD/tests/EPS-Test.eps" /private/tmp/eps-finder-thumbnail.png
-```
-
-Bu görsel kontrol paketteki koyu zeminli örneğin doğru boyutta ve ortalanmış çizildiğini sınar. Desteklenen en eski macOS sürümünde, fiziksel Intel donanımında ve yönetici onayı gerektiren tam kurulumda test henüz yapılmadı.
+Yayınlamak için Anahtar Zinciri’nde `eps-finder` hesabına ait özel güncelleme anahtarı gerekir. Özel anahtarı depoya veya kaynak ZIP’ine eklemeyin. `appcast.xml` dahil `dist/` dosyalarını birlikte yayımlayın. Ayrıntılı derleme ve yayınlama adımları [İngilizce kılavuzdadır](README.md#build).
 
 ## Lisans
 
 AGPL-3.0-or-later; tam metin [LICENSE](LICENSE) dosyasında. Ghostscript ve derleme uyarlaması [THIRD_PARTY_NOTICES.md](THIRD_PARTY_NOTICES.md) içinde açıklanır. İkili paketle birlikte oluşturulan kaynak ZIP’i de paylaşın.
 
-[Releases](https://github.com/enesdigital/eps-finder/releases/latest) bölümünde kurulum paketi, tam Ghostscript kaynaklarını içeren kaynak ZIP’i ve `SHA256SUMS` dosyası bulunur. ZIP adı `EPS-Finder-1.3.1-source.zip` şeklindedir; GitHub’ın otomatik oluşturduğu “Source code” arşivinden farklı olarak Ghostscript kaynak arşivini de içerir.
+1.4.0 sürümü Sparkle ile doğrulanan uygulama içi güncellemeleri ekler. [EPS icon](assets/ICON.md).
 
 Apple belgeleri: [Universal macOS binary](https://developer.apple.com/documentation/apple-silicon/building-a-universal-macos-binary), [Quick Look UI](https://developer.apple.com/documentation/quicklookui), [notarizasyon](https://developer.apple.com/documentation/security/notarizing-macos-software-before-distribution).
+
+[Sparkle 2.10.1 · MIT · Ed25519 · appcast.xml](README.md#updates)

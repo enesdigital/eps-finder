@@ -2,6 +2,8 @@
 """Create and verify an unsigned universal macOS installer and its source archive."""
 import argparse
 import hashlib
+from datetime import datetime, timezone
+from email.utils import format_datetime
 import pathlib
 import plistlib
 import shutil
@@ -9,6 +11,7 @@ import subprocess
 import tempfile
 import xml.etree.ElementTree as ET
 import zipfile
+from sparkle import prepare, PUBLIC_KEY, KEYCHAIN_ACCOUNT, VERSION as SPARKLE_VERSION
 from localization import LANGUAGES, load_catalogs, verify_resources, write_installer
 
 ROOT = pathlib.Path(__file__).resolve().parent
@@ -16,9 +19,14 @@ ARCHITECTURES = ("arm64", "x86_64")
 IDENTIFIER = "local.epsfinder.pkg"
 
 
-def package(app, output, archive):
+def package(app, output, archive, sparkle):
+    prepare(sparkle, with_source=True)
     catalogs = load_catalogs(ROOT)
     app_info = plistlib.loads((app / "Contents/Info.plist").read_bytes())
+    assert app_info["SUPublicEDKey"] == PUBLIC_KEY
+    assert app_info["SURequireSignedFeed"] and app_info["SUVerifyUpdateBeforeExtraction"]
+    public_key = subprocess.check_output([str(sparkle / "bin/generate_keys"), "--account", KEYCHAIN_ACCOUNT, "-p"], text=True).strip()
+    assert public_key == PUBLIC_KEY, "Release key differs from the public key embedded in the app"
     assert app_info["CFBundleIdentifier"] == "local.epsfinder", "Unexpected application"
     version = app_info["CFBundleShortVersionString"]
     minimum_os = app_info["LSMinimumSystemVersion"]
@@ -91,6 +99,11 @@ def package(app, output, archive):
         for binary in binaries:
             actual = subprocess.check_output(["lipo", "-archs", str(binary)], text=True).split()
             assert set(actual) == set(ARCHITECTURES), "Missing architecture in " + str(binary)
+        framework = payload / "Contents/Frameworks/Sparkle.framework/Versions/B"
+        for relative in ("Sparkle", "Autoupdate", "Updater.app/Contents/MacOS/Updater",
+                         "XPCServices/Installer.xpc/Contents/MacOS/Installer", "XPCServices/Downloader.xpc/Contents/MacOS/Downloader"):
+            assert set(subprocess.check_output(["lipo", "-archs", str(framework / relative)], text=True).split()) == set(ARCHITECTURES)
+        assert (payload / "Contents/Resources/Sparkle-LICENSE.txt").read_bytes() == (sparkle / "LICENSE").read_bytes()
         packaged_distribution = ET.parse(expanded / "Distribution").getroot()
         host_architectures = packaged_distribution.find("options").get("hostArchitectures")
         assert set(host_architectures.split(",")) == set(ARCHITECTURES)
@@ -108,14 +121,55 @@ def package(app, output, archive):
         for language in LANGUAGES:
             relative = "localizations/" + language + ".json"
             file.write(ROOT / relative, prefix + "-source/" + relative)
-        file.write(archive, prefix + "-source/vendor/ghostscript-10.08.0.tar.gz",
-                   compress_type=zipfile.ZIP_STORED)
+        file.write(archive, prefix + "-source/vendor/ghostscript-10.08.0.tar.gz", compress_type=zipfile.ZIP_STORED)
+        for name in ("Sparkle-" + SPARKLE_VERSION + ".tar.xz", "Sparkle-" + SPARKLE_VERSION + "-source.tar.gz"):
+            file.write(sparkle / name, prefix + "-source/build/sparkle/" + name, compress_type=zipfile.ZIP_STORED)
     with zipfile.ZipFile(sources) as file:
         assert file.testzip() is None, "Source ZIP is corrupt"
+    signing_tool = str(sparkle / "bin/sign_update")
+    signature = subprocess.check_output([signing_tool, "--account", KEYCHAIN_ACCOUNT, "-p", str(installer)], text=True).strip()
+    subprocess.run([signing_tool, "--account", KEYCHAIN_ACCOUNT, "--verify", str(installer), signature], check=True)
+    namespace = "http://www.andymatuschak.org/xml-namespaces/sparkle"
+    ET.register_namespace("sparkle", namespace)
+    document = ET.Element("rss", version="2.0")
+    channel = ET.SubElement(document, "channel")
+    ET.SubElement(channel, "title").text = "EPS Finder"
+    ET.SubElement(channel, "link").text = "https://github.com/enesdigital/eps-finder"
+    item = ET.SubElement(channel, "item")
+    ET.SubElement(item, "title").text = "EPS Finder " + version
+    ET.SubElement(item, "{" + namespace + "}version").text = app_info["CFBundleVersion"]
+    ET.SubElement(item, "{" + namespace + "}shortVersionString").text = version
+    ET.SubElement(item, "{" + namespace + "}minimumSystemVersion").text = minimum_os
+    ET.SubElement(item, "pubDate").text = format_datetime(datetime.now(timezone.utc))
+    ET.SubElement(item, "link").text = "https://github.com/enesdigital/eps-finder/releases/tag/v" + version
+    for language in LANGUAGES:
+        ET.SubElement(item, "description", {"{http://www.w3.org/XML/1998/namespace}lang": language}).text = catalogs[language]["update.releaseNotes"]
+    ET.SubElement(item, "enclosure", {
+        "url": "https://github.com/enesdigital/eps-finder/releases/download/v" + version + "/" + installer.name,
+        "length": str(installer.stat().st_size), "type": "application/octet-stream",
+        "{" + namespace + "}edSignature": signature,
+        "{" + namespace + "}installationType": "package"})
+    appcast = output / "appcast.xml"
+    ET.ElementTree(document).write(appcast, encoding="utf-8", xml_declaration=True)
+    subprocess.run([signing_tool, "--account", KEYCHAIN_ACCOUNT, str(appcast)], check=True)
+    subprocess.run([signing_tool, "--account", KEYCHAIN_ACCOUNT, "--verify", str(appcast)], check=True)
+    with tempfile.TemporaryDirectory(prefix="eps-finder-signature-test-") as temporary:
+        changed = pathlib.Path(temporary) / "changed.xml"
+        changed.write_bytes(appcast.read_bytes().replace(b"EPS Finder", b"Evil Finder", 1))
+        result = subprocess.run([signing_tool, "--account", KEYCHAIN_ACCOUNT, "--verify", str(changed)], capture_output=True)
+        assert result.returncode != 0, "Modified feed signature was accepted"
+        changed = pathlib.Path(temporary) / "changed.pkg"
+        shutil.copyfile(installer, changed)
+        with changed.open("r+b") as file:
+            byte = file.read(1)
+            file.seek(0)
+            file.write(bytes([byte[0] ^ 1]))
+        result = subprocess.run([signing_tool, "--account", KEYCHAIN_ACCOUNT, "--verify", str(changed), signature], capture_output=True)
+        assert result.returncode != 0, "Modified package signature was accepted"
     sums = output / (prefix + "-SHA256SUMS.txt")
     sums.write_text("".join(hashlib.sha256(path.read_bytes()).hexdigest() + "  " + path.name + "\n"
-                            for path in (installer, sources)))
-    print("PASS: installer payload, signatures, both architectures, five-language app/installer resources, scripts, OS requirement, source archive")
+                            for path in (installer, sources, appcast)))
+    print("PASS: installer payload, signatures, both architectures, five-language app/installer resources, scripts, OS requirement, source archive, signed feed/package and tamper rejection")
     print(installer)
     print(sources)
 
@@ -126,5 +180,6 @@ if __name__ == "__main__":
     parser.add_argument("--output", type=pathlib.Path, default=ROOT / "dist")
     parser.add_argument("--source-archive", type=pathlib.Path,
                         default=ROOT / "build/cache/ghostscript-10.08.0.tar.gz")
+    parser.add_argument("--sparkle", type=pathlib.Path, default=ROOT / "build/sparkle")
     args = parser.parse_args()
-    package(args.app.resolve(), args.output.resolve(), args.source_archive.resolve())
+    package(args.app.resolve(), args.output.resolve(), args.source_archive.resolve(), args.sparkle.resolve())
